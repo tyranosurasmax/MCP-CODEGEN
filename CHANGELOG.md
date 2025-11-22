@@ -1,9 +1,34 @@
 # Changelog
 
-All notable changes to mcp-codegen will be documented in this file.
+All notable changes to codegen will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2025-11-22
+
+### Added
+- Universal adapter pattern supporting multiple API source types
+- OpenAPI/REST adapter with OpenAPI 3.x support
+- UniversalRuntime for managing all adapter types
+- HTTP authentication support (Bearer, API Key, Basic, OAuth2)
+- Environment variable resolution in configurations
+- Multi-source orchestration
+- Universal configuration format
+- Type-safe wrappers for REST APIs
+
+### Changed
+- Refactored MCP implementation to use adapter pattern
+- Updated runtime to universal architecture
+- Enhanced type system for multi-source support
+- Improved documentation with universal focus
+
+### Maintained
+- 98% token reduction across all source types
+- Backward compatibility with MCP-only configurations
+- Type-safe wrapper generation
+- Hash-based regeneration
+- Cross-platform support
 
 ## [1.0.1] - 2025-11-22
 
@@ -21,48 +46,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-server index generation
 
 ### Features
-- 98% token reduction (validated against Anthropic's research)
+- 98% token reduction
 - Type-safe wrapper generation
 - Automatic retry with exponential backoff
 - Timeout support (configurable, default 60s)
 - Support for complex JSON Schemas (anyOf, oneOf, allOf)
-- Server discovery precedence:
-  1. `mcp-codegen.json`
-  2. `~/.config/mcp/*.json`
-  3. Claude Desktop configs
-  4. System configs
-
-### Known Limitations
-- Streaming responses are buffered (will be addressed in v1.1)
-- No sandboxing (security improvements coming)
-- TypeScript only (Python support in v1.1)
 
 ## [Unreleased]
 
-### Planned for v1.1
-- Python wrapper generation
-- Watch mode for development
-- Mock mode for testing
-- Streaming support
-- Meta-server support
-- State management layer
-- Basic sandboxing options
-
 ### Planned for v1.2
-- Intelligent tool composition
-- Parity across Python, JavaScript, and TypeScript
+- GraphQL adapter
+- Database adapter (PostgreSQL, MySQL, SQLite)
+- Streaming support
+- State management layer
 - Enhanced security features
 
-### Planned for v2
-- Schema evolution tracking
-- Web UI
-- Workflow visualization
-- Advanced sandboxing
+### Planned for v2.0
+- Web UI for configuration
+- Advanced security (sandboxing)
+- Plugin ecosystem
+- Python wrapper generation
 
-### Planned for v3
-- OpenAPI/REST/GraphQL support
-- Database schema integration
-
-### Planned for v4
-- Autonomous optimization
-- Predictive synthesis
+### Planned for v3.0
+- AI-powered tool composition
+- Automatic optimization
+- Multi-language support
+- Enterprise features

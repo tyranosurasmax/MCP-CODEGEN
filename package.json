@@ -1,9 +1,10 @@
 {
-  "name": "mcp-codegen",
-  "version": "1.0.1",
-  "description": "Transform MCP servers into TypeScript tool filesystems for Code Mode",
+  "name": "codegen",
+  "version": "1.1.0",
+  "description": "Universal Code Mode - Transform ANY API into type-safe TypeScript wrappers",
   "main": "dist/index.js",
   "bin": {
+    "codegen": "./dist/cli.js",
     "mcp-codegen": "./dist/cli.js"
   },
   "scripts": {
@@ -14,12 +15,17 @@
     "lint": "eslint src/**/*.ts"
   },
   "keywords": [
-    "mcp",
+    "codegen",
     "code-mode",
-    "anthropic",
+    "universal",
+    "mcp",
+    "openapi",
+    "rest-api",
+    "graphql",
+    "typescript",
     "llm",
-    "agent",
-    "codegen"
+    "ai-agents",
+    "api-wrapper"
   ],
   "author": "",
   "license": "MIT",
@@ -30,7 +36,8 @@
     "zod": "^3.23.8",
     "chalk": "^4.1.2",
     "ora": "^5.4.1",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

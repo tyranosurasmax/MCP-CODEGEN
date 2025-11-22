@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+      },
+      "sqlite": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sqlite", "./database.db"]
+      }
+    },
+    "openapi": {
+      "github": {
+        "type": "openapi",
+        "spec": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "baseUrl": "https://api.github.com",
+        "auth": {
+          "type": "bearer",
+          "token": "${GITHUB_TOKEN}"
+        }
+      },
+      "stripe": {
+        "type": "openapi",
+        "spec": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "baseUrl": "https://api.stripe.com",
+        "auth": {
+          "type": "bearer",
+          "token": "${STRIPE_API_KEY}"
+        }
+      },
+      "jsonplaceholder": {
+        "type": "openapi",
+        "spec": "https://jsonplaceholder.typicode.com/openapi.json",
+        "baseUrl": "https://jsonplaceholder.typicode.com"
+      }
+    }
+  },
+  "outputDir": "./codegen",
+  "runtimePackage": "codegen/runtime"
+}
