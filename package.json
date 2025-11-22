@@ -1,0 +1,47 @@
+{
+  "name": "mcp-codegen",
+  "version": "1.0.1",
+  "description": "Transform MCP servers into TypeScript tool filesystems for Code Mode",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-codegen": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublish": "npm run build",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "mcp",
+    "code-mode",
+    "anthropic",
+    "llm",
+    "agent",
+    "codegen"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "commander": "^12.0.0",
+    "json-schema-to-typescript": "^15.0.0",
+    "zod": "^3.23.8",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.11",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
