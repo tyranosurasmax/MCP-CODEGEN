@@ -105,10 +105,30 @@ export interface CodegenConfig {
 
 export interface AgentReadyManifest {
   codeMode: boolean;
-  language: string;
-  wrapperRoot: string;
-  runtimePackage: string;
   version: string;
+  generated: string;
+  language: string;
+  sources: {
+    mcp?: string[];
+    openapi?: string[];
+    total: number;
+  };
+  tools: {
+    total: number;
+    bySource: Record<string, number>;
+  };
+  tokenReduction?: {
+    traditional: number;
+    codeMode: number;
+    reduction: number;
+    savings: string;
+  };
+  paths: {
+    runtime: string;
+    wrappers: string;
+    config: string;
+  };
+  capabilities: string[];
 }
 
 export interface BenchmarkData {

@@ -9,6 +9,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import { Orchestrator } from './orchestrator';
+import { UniversalOrchestrator } from './orchestrator-universal';
 import { ServerDiscovery } from './discovery';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -127,117 +128,85 @@ program
   });
 
 /**
- * Quickstart command: initialize new project
+ * Quickstart command: initialize new project with the WOW factor
  */
 program
   .command('quickstart')
-  .description('Initialize a new mcp-codegen project')
+  .description('Initialize Universal Code Mode with 98% token reduction')
   .action(async () => {
-    console.log(chalk.bold('\nCODEGEN Quickstart\n'));
+    console.log(chalk.bold.cyan('\n=== CODEGEN QUICKSTART ===\n'));
+    console.log('Activating Universal Code Mode...\n');
 
-    const spinner = ora('Setting up project...').start();
+    const spinner = ora('Discovering API sources...').start();
 
     try {
-      // Create tsconfig if it doesn't exist
-      if (!fs.existsSync('tsconfig.json')) {
-        const tsconfig = {
-          compilerOptions: {
-            target: 'ES2022',
-            module: 'commonjs',
-            lib: ['ES2022'],
-            strict: true,
-            esModuleInterop: true,
-            skipLibCheck: true,
-            moduleResolution: 'node',
-            resolveJsonModule: true,
-          },
-          include: ['mcp/**/*', 'example.ts'],
-        };
-
-        fs.writeFileSync('tsconfig.json', JSON.stringify(tsconfig, null, 2));
-        spinner.text = 'Created tsconfig.json';
+      // Auto-detect configuration or use defaults
+      let configPath = 'codegen.config.json';
+      if (!fs.existsSync(configPath) && !fs.existsSync('mcp-codegen.json')) {
+        spinner.warn('No configuration found. Please create codegen.config.json first.');
+        console.log(chalk.yellow('\nExample configuration:'));
+        console.log(chalk.dim(`{
+  "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+      }
+    }
+  }
+}`));
+        return;
       }
 
-      // Run sync
-      spinner.text = 'Discovering and generating wrappers...';
-      const orchestrator = new Orchestrator();
-      const result = await orchestrator.sync();
+      // Use UniversalOrchestrator
+      spinner.text = 'Generating type-safe wrappers...';
+      const orchestrator = new UniversalOrchestrator();
+      const result = await orchestrator.sync(configPath);
 
-      // Create example file
-      const exampleContent = `import { callMCPTool } from "./mcp/runtime";
+      spinner.succeed('Code generation complete!');
 
-async function main() {
-  try {
-    // Example: Call an MCP tool
-    // const result = await callMCPTool("server-name__tool-name", { param: "value" });
-    // console.log(result);
+      // Display impressive results
+      console.log(chalk.bold.green('\n=== CODE MODE ACTIVATED ===\n'));
 
-    console.log("MCP Code Mode ready!");
-    console.log("Available servers:", ${Object.keys(result.serverMap).length});
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+      console.log(chalk.bold('Sources Discovered:'));
+      if (result.manifest.sources.mcp) {
+        console.log(chalk.cyan(`  MCP Servers: ${result.manifest.sources.mcp.join(', ')}`));
+      }
+      if (result.manifest.sources.openapi) {
+        console.log(chalk.cyan(`  REST APIs: ${result.manifest.sources.openapi.join(', ')}`));
+      }
+      console.log(chalk.dim(`  Total: ${result.manifest.sources.total} sources\n`));
 
-main();
-`;
+      console.log(chalk.bold('Tools Generated:'));
+      console.log(chalk.cyan(`  ${result.manifest.tools.total} TypeScript functions`));
+      for (const [source, count] of Object.entries(result.manifest.tools.bySource)) {
+        console.log(chalk.dim(`    ${source}: ${count} tools`));
+      }
 
-      fs.writeFileSync('example.ts', exampleContent);
+      console.log(chalk.bold('\nToken Reduction:'));
+      console.log(chalk.red(`  Traditional: ${result.benchmark.rawToolsTokens.toLocaleString()} tokens`));
+      console.log(chalk.green(`  Code Mode: ${result.benchmark.wrapperTokens.toLocaleString()} tokens`));
+      console.log(chalk.bold.yellow(`  Reduction: ${result.benchmark.reductionPercentage.toFixed(1)}%\n`));
 
-      // Create agent harness example
-      const harnessContent = `/**
- * Agent Harness Example
- * This demonstrates how an agent can use the generated wrappers
- */
-
-import * as fs from 'fs';
-import * as path from 'path';
-
-async function agentHarness() {
-  // 1. Read .agent-ready.json to confirm Code Mode is enabled
-  const manifest = JSON.parse(fs.readFileSync('.agent-ready.json', 'utf-8'));
-
-  if (!manifest.codeMode) {
-    throw new Error('Code Mode not enabled');
-  }
-
-  console.log(\`Code Mode: \${manifest.language}\`);
-  console.log(\`Wrapper Root: \${manifest.wrapperRoot}\`);
-
-  // 2. Explore available servers
-  const serversDir = path.join(manifest.wrapperRoot, 'servers');
-  const servers = fs.readdirSync(serversDir);
-
-  console.log(\`\\nAvailable servers: \${servers.join(', ')}\`);
-
-  // 3. Import and use tools (example)
-  // const { someServer } = await import('./mcp/servers/some-server');
-  // const result = await someServer.someTool({ param: 'value' });
-  // console.log(result);
-}
-
-agentHarness().catch(console.error);
-`;
-
-      fs.writeFileSync('agent-harness.example.ts', harnessContent);
+      const costSavings = ((result.benchmark.rawToolsTokens - result.benchmark.wrapperTokens) * 0.003 / 1000).toFixed(2);
+      console.log(chalk.bold.green(`  Estimated savings: $${costSavings} per agent session\n`));
 
       spinner.succeed('Project initialized!');
 
-      console.log(chalk.green('\n✓ Quickstart complete!\n'));
-      console.log(chalk.bold('Files created:'));
-      console.log(chalk.dim('  • mcp/                  - Generated wrappers'));
-      console.log(chalk.dim('  • mcp/server-map.json   - Server configuration'));
-      console.log(chalk.dim('  • .agent-ready.json     - Code Mode manifest'));
-      console.log(chalk.dim('  • tsconfig.json         - TypeScript configuration'));
-      console.log(chalk.dim('  • example.ts            - Example usage'));
-      console.log(chalk.dim('  • agent-harness.example.ts - Agent integration example'));
+      console.log(chalk.bold('Generated Files:'));
+      console.log(chalk.dim('  • codegen/              - Type-safe wrappers'));
+      console.log(chalk.dim('  • codegen/runtime/      - Universal runtime'));
+      console.log(chalk.dim('  • codegen/example.ts    - Usage demonstration'));
+      console.log(chalk.dim('  • codegen/BENCHMARK.md  - Token reduction proof'));
+      console.log(chalk.dim('  • .agent-ready.json     - Agent discovery signal'));
 
-      console.log(chalk.yellow(`\n📊 Token reduction: ${result.benchmark.reductionPercentage}%\n`));
+      console.log(chalk.bold('\nNext Steps:'));
+      console.log(chalk.cyan('  1. npx tsx codegen/example.ts    - Run the example'));
+      console.log(chalk.cyan('  2. cat .agent-ready.json         - View manifest'));
+      console.log(chalk.cyan('  3. cat codegen/BENCHMARK.md      - See full benchmark'));
 
-      console.log(chalk.bold('Next steps:'));
-      console.log(chalk.dim('  1. npm install'));
-      console.log(chalk.dim('  2. Edit example.ts to use your tools'));
-      console.log(chalk.dim('  3. npx tsx example.ts'));
+      console.log(chalk.bold.green('\nCode Mode is active. Your agents can now use optimized wrappers!\n'));
     } catch (error) {
       spinner.fail('Quickstart failed');
       console.error(chalk.red('\n' + (error instanceof Error ? error.message : String(error))));

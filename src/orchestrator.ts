@@ -198,10 +198,22 @@ export {
   private generateManifest(): AgentReadyManifest {
     const manifest: AgentReadyManifest = {
       codeMode: true,
-      language: 'typescript',
-      wrapperRoot: './mcp',
-      runtimePackage: this.runtimePackage,
       version: '1.0.1',
+      generated: new Date().toISOString(),
+      language: 'typescript',
+      sources: {
+        total: 0,
+      },
+      tools: {
+        total: 0,
+        bySource: {},
+      },
+      paths: {
+        runtime: './mcp/runtime',
+        wrappers: './mcp',
+        config: './mcp-codegen.json',
+      },
+      capabilities: ['mcp-servers', 'type-safety'],
     };
 
     fs.writeFileSync(
