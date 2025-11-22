@@ -10,7 +10,14 @@
           "/tmp"
         ]
       }
+    },
+    "openapi": {
+      "demoapi": {
+        "type": "openapi",
+        "spec": "./demo-api.json",
+        "baseUrl": "https://api.example.com"
+      }
     }
   },
-  "outputDir": "./test-output"
+  "outputDir": "./codegen"
 }
