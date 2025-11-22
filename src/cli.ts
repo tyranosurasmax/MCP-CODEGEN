@@ -166,7 +166,7 @@ program
 
       spinner.succeed('Code generation complete!');
 
-      // Display impressive results
+      // Display results
       console.log(chalk.bold.green('\n=== CODE MODE ACTIVATED ===\n'));
 
       console.log(chalk.bold('Sources Discovered:'));

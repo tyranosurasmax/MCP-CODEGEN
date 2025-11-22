@@ -1,10 +1,9 @@
 {
-  "name": "codegen",
+  "name": "mcp-codegen",
   "version": "1.1.0",
   "description": "Universal Code Mode - Transform ANY API into type-safe TypeScript wrappers",
   "main": "dist/index.js",
   "bin": {
-    "codegen": "./dist/cli.js",
     "mcp-codegen": "./dist/cli.js"
   },
   "scripts": {
