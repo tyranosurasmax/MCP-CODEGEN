@@ -1,25 +1,29 @@
 {
   "codeMode": true,
   "version": "1.1.0",
-  "generated": "2025-11-22T08:12:10.981Z",
+  "generated": "2025-11-22T08:19:31.873Z",
   "language": "typescript",
   "sources": {
     "mcp": [
       "filesystem"
     ],
-    "total": 1
+    "openapi": [
+      "demoapi"
+    ],
+    "total": 2
   },
   "tools": {
-    "total": 14,
+    "total": 19,
     "bySource": {
-      "filesystem": 14
+      "filesystem": 14,
+      "demoapi": 5
     }
   },
   "tokenReduction": {
-    "traditional": 1841,
-    "codeMode": 120,
-    "reduction": 0.9348000000000001,
-    "savings": "93.5%"
+    "traditional": 2442,
+    "codeMode": 139,
+    "reduction": 0.9431,
+    "savings": "94.3%"
   },
   "paths": {
     "runtime": "./codegen/runtime",
@@ -29,6 +33,7 @@
   "capabilities": [
     "type-safety",
     "mcp-servers",
+    "rest-apis",
     "connection-pooling"
   ]
 }
