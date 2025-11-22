@@ -1,21 +1,21 @@
 # Universal CODEGEN Token Usage Benchmark
 
-Generated: 2025-11-22T07:58:43.823Z
+Generated: 2025-11-22T08:12:10.963Z
 
 ## Results
 
 | Metric | Value |
 |--------|-------|
-| Traditional (Raw Specs) | 601 tokens |
-| Code Mode (Manifest) | 119 tokens |
-| **Reduction** | **80.2%** |
+| Traditional (Raw Specs) | 1,841 tokens |
+| Code Mode (Manifest) | 120 tokens |
+| **Reduction** | **93.48%** |
 
 ## Analysis
 
-By converting API specifications into TypeScript wrappers, we achieved a **80.2% reduction** in token usage.
+By converting API specifications into TypeScript wrappers, we achieved a **93.48% reduction** in token usage.
 
 This means:
-- Agents can work with 5x more tools in the same context window
+- Agents can work with 15x more tools in the same context window
 - Faster processing and lower API costs
 - Cleaner, more maintainable code
 - Type-safe integration with any API
