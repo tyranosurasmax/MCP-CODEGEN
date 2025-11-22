@@ -1,6 +1,12 @@
-# CODEGEN
+# MCP-CODEGEN
 
-**"Universal Code Mode for APIs, Services, and Tools"**
+**Universal Code Mode for APIs, Services, and Tools**
+
+![Status](https://img.shields.io/badge/status-active%20development-orange)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![License](https://img.shields.io/badge/license-Apache%202.0-green)
+
+> **ACTIVE DEVELOPMENT**: This project is under active development. See commit history for latest updates.
 
 Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
@@ -38,7 +44,7 @@ Code Mode is the future of AI-API integration:
 
 ```bash
 # Install
-npm install -g codegen
+npm install -g mcp-codegen
 
 # Create config
 cat > codegen.config.json << 'EOF'
@@ -67,7 +73,7 @@ cat > codegen.config.json << 'EOF'
 EOF
 
 # Generate wrappers
-codegen sync
+mcp-codegen sync
 
 # Use in your code
 ```
@@ -91,28 +97,24 @@ await call("filesystem__write_file", {
 
 ---
 
-## Not To Be Confused With...
+## What This Does
 
-**mcp-codegen vs codegen-sh/codegen**
-- **codegen-sh/codegen** is an AI software engineering agent that writes code for developers
-- **mcp-codegen** generates CODE that AI agents can use to interact with APIs
-- We're complementary: They help developers write code, we help agents call APIs efficiently
+**mcp-codegen generates TypeScript wrapper code that AI agents can use to interact with APIs.**
 
-**mcp-codegen vs MCP Servers**
-- **MCP Servers** provide tools via the Model Context Protocol
-- **mcp-codegen** doesn't create MCP servers - it creates optimized wrappers for EXISTING servers
-- We reduce token usage by 98% when agents use those servers
+### What We Are NOT
 
-**mcp-codegen vs Traditional OpenAPI Generators**
-- **openapi-generator, swagger-codegen** create traditional client libraries for humans
-- **mcp-codegen** creates LLM-optimized wrappers specifically designed for AI agents
-- Our wrappers prioritize token efficiency and agent discoverability over human ergonomics
+- **Not an MCP Server**: We don't create servers. We create wrappers for existing MCP servers, REST APIs, and other sources.
+- **Not a Client Library Generator**: Traditional tools like openapi-generator create libraries for human developers. We optimize for AI agents and LLM token efficiency.
+- **Not an AI Agent**: We don't write code or act autonomously. We're a tool that generates code for agents to use.
 
-**What We Actually Do**
-- Generate CODE for agents to explore and use (not servers, not agents themselves)
-- Work with ANY API type (MCP, REST, GraphQL, databases)
-- Optimize for LLM token usage with 98% reduction
-- Universal, not locked to any platform or protocol
+### What We Actually Do
+
+1. **Discover** API sources (MCP servers, OpenAPI specs, GraphQL schemas)
+2. **Generate** type-safe TypeScript wrappers optimized for LLM consumption
+3. **Reduce** token usage by 98% compared to sending raw API specifications
+4. **Enable** AI agents to explore and call APIs through generated code instead of massive spec files
+
+The key innovation: Instead of sending a 150K token API specification in every prompt, agents import and use 2K tokens of generated wrapper code.
 
 ---
 
@@ -297,16 +299,16 @@ Environment variables are resolved automatically (`${VAR_NAME}`).
 
 ```bash
 # Discover and generate all wrappers
-codegen sync
+mcp-codegen sync
 
 # Generate specific source
-codegen generate <source-name>
+mcp-codegen generate <source-name>
 
 # List discovered sources
-codegen list
+mcp-codegen list
 
 # Initialize new project
-codegen quickstart
+mcp-codegen quickstart
 ```
 
 ---
@@ -413,7 +415,28 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+Apache 2.0 License - see [LICENSE](./LICENSE) for details.
+
+This project includes patent protection under Apache 2.0.
+See [NOTICE](./NOTICE) and [COPYRIGHT](./COPYRIGHT) for attribution requirements.
+
+---
+
+## Reference Implementation
+
+**This is the original and reference implementation of Universal Code Mode.**
+
+Key contributions originated in this project:
+- Universal adapter pattern for multi-source API integration (November 2025)
+- .agent-ready.json agent discovery mechanism (November 2025)
+- Type-safe wrapper generation across MCP, OpenAPI, and future sources (November 2025)
+- 98% token reduction validation and benchmarking methodology (November 2025)
+
+First public commit: November 2025
+Repository: https://github.com/tyranosurasmax/MCP-CODEGEN
+
+This project extends the Code Mode concept introduced by Anthropic to work universally
+across all API types, not just MCP servers.
 
 ---
 
