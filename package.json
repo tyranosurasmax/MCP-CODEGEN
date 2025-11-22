@@ -6,6 +6,11 @@
   "bin": {
     "mcp-codegen": "./dist/cli.js"
   },
+  "exports": {
+    ".": "./dist/index.js",
+    "./runtime": "./codegen/runtime/index.js",
+    "./codegen/*": "./codegen/*"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",

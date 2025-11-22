@@ -1,10 +1,45 @@
+# Development files
 src/
-*.test.ts
-*.spec.ts
 tsconfig.json
 .git/
 .github/
+
+# Tests
+*.test.ts
+*.spec.ts
+__tests__/
+
+# Build artifacts (keep dist/)
 node_modules/
-coverage/
-*.log
+
+# Documentation (keep in package)
+# README.md
+# LICENSE
+# NOTICE
+
+# Examples (keep in package for users)
+# examples/
+
+# Generated code (keep in package - users need to see patterns)
+# codegen/
+# .agent-ready.json
+
+# Demo files
+demo-api.json
+demo-output/
+universal-demo.json
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

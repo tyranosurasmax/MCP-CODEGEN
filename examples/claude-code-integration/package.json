@@ -1,0 +1,19 @@
+{
+  "name": "claude-code-mcp-codegen-example",
+  "version": "1.0.0",
+  "description": "Example showing how Claude Code uses mcp-codegen",
+  "type": "module",
+  "scripts": {
+    "setup": "mcp-codegen quickstart",
+    "example": "tsx usage-example.ts",
+    "verify": "cat .agent-ready.json"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
