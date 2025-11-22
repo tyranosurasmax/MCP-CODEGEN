@@ -11,10 +11,10 @@ import { call } from './codegen/runtime';
 async function example() {
   console.log('Universal Code Mode Example\n');
 
-  // Example: REST API Call
-  console.log('Calling REST API: demoapi__listUsers');
+  // Example: MCP Tool Call
+  console.log('Calling MCP tool: filesystem__read_file');
   console.log('\nToken Reduction: 98%');
-  console.log('Instead of sending OpenAPI specs, agents use code directly.');
+  console.log('Instead of sending tool definitions, agents use code directly.');
 
 }
 

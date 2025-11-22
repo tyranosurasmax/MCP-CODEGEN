@@ -7,10 +7,16 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { BaseAdapter, AdapterConnectionError, AdapterExecutionError, AdapterTimeoutError } from './base';
 import { ToolDefinition, MCPServerConfig } from '../types';
+import { RawMCPClient } from './mcp-client-raw';
 
 interface ClientInfo {
   client: Client;
   transport: StdioClientTransport;
+  retries: number;
+}
+
+interface RawClientInfo {
+  client: RawMCPClient;
   retries: number;
 }
 
@@ -19,8 +25,10 @@ interface ClientInfo {
  */
 export class MCPAdapter extends BaseAdapter {
   private clientInfo?: ClientInfo;
+  private rawClientInfo?: RawClientInfo;
   private timeout: number = 60000; // 60 seconds
   private maxRetries: number = 2;
+  private useRawClient: boolean = true; // Use raw client to bypass SDK validation
 
   constructor(name: string, private config: MCPServerConfig) {
     super(name, 'mcp');
@@ -30,6 +38,45 @@ export class MCPAdapter extends BaseAdapter {
    * Discover tools from the MCP server
    */
   async discover(): Promise<ToolDefinition[]> {
+    if (this.useRawClient) {
+      return this.discoverWithRawClient();
+    }
+    return this.discoverWithSDK();
+  }
+
+  /**
+   * Discover tools using raw client (bypasses SDK validation)
+   */
+  private async discoverWithRawClient(): Promise<ToolDefinition[]> {
+    const rawClient = await this.getRawClient();
+
+    try {
+      const tools = await Promise.race([
+        rawClient.listTools(),
+        this.timeoutPromise(`List tools from ${this.name} timed out`),
+      ]);
+
+      // Map and normalize tools (no SDK validation issues!)
+      return tools.map((tool: any) => ({
+        name: tool.name || 'unnamed',
+        description: tool.description || '',
+        inputSchema: this.normalizeSchema(tool.inputSchema),
+        outputSchema: this.normalizeSchema(tool.outputSchema),
+      }));
+    } catch (error) {
+      console.warn(`Failed to discover tools from ${this.name}:`, error);
+      throw new AdapterExecutionError(
+        `Failed to discover tools: ${error instanceof Error ? error.message : String(error)}`,
+        this.name,
+        this.type
+      );
+    }
+  }
+
+  /**
+   * Discover tools using official SDK (strict validation)
+   */
+  private async discoverWithSDK(): Promise<ToolDefinition[]> {
     const client = await this.getClient();
 
     try {
@@ -38,7 +85,6 @@ export class MCPAdapter extends BaseAdapter {
         this.timeoutPromise(`List tools from ${this.name} timed out`),
       ]);
 
-      // Map tools and normalize schemas
       return (result.tools || []).map((tool: any) => ({
         name: tool.name,
         description: tool.description || '',
@@ -46,7 +92,6 @@ export class MCPAdapter extends BaseAdapter {
         outputSchema: this.normalizeSchema(tool.outputSchema),
       }));
     } catch (error) {
-      // Log but don't crash - allows other sources to work
       console.error(`Failed to discover tools from ${this.name}:`, error);
       throw new AdapterExecutionError(
         `Failed to discover tools: ${error instanceof Error ? error.message : String(error)}`,
@@ -112,6 +157,15 @@ export class MCPAdapter extends BaseAdapter {
    * Close MCP client connection
    */
   async close(): Promise<void> {
+    if (this.rawClientInfo) {
+      try {
+        await this.rawClientInfo.client.close();
+      } catch (error) {
+        console.warn(`Failed to close raw MCP connection for ${this.name}:`, error);
+      } finally {
+        this.rawClientInfo = undefined;
+      }
+    }
     if (this.clientInfo) {
       try {
         await this.clientInfo.client.close();
@@ -120,6 +174,48 @@ export class MCPAdapter extends BaseAdapter {
       } finally {
         this.clientInfo = undefined;
       }
+    }
+  }
+
+  /**
+   * Get or create raw MCP client
+   */
+  private async getRawClient(): Promise<RawMCPClient> {
+    if (this.rawClientInfo) {
+      return this.rawClientInfo.client;
+    }
+
+    return this.connectRawClient();
+  }
+
+  /**
+   * Connect to MCP server using raw client
+   */
+  private async connectRawClient(): Promise<RawMCPClient> {
+    const client = new RawMCPClient({
+      command: this.config.command,
+      args: this.config.args || [],
+      env: this.config.env,
+    });
+
+    try {
+      await Promise.race([
+        client.connect(),
+        this.timeoutPromise(`Connection to ${this.name} timed out`),
+      ]);
+
+      this.rawClientInfo = {
+        client,
+        retries: 0,
+      };
+
+      return client;
+    } catch (error) {
+      throw new AdapterConnectionError(
+        `Failed to connect: ${error instanceof Error ? error.message : String(error)}`,
+        this.name,
+        this.type
+      );
     }
   }
 

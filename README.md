@@ -34,7 +34,7 @@ Code Mode is the future of AI-API integration:
 | **MCP Servers** | Production | Claude Desktop tools, local services |
 | **REST APIs** | Production | GitHub, Stripe, any OpenAPI spec |
 
-Works today with real APIs.
+Both adapters are production-ready and fully functional.
 
 ---
 
@@ -44,26 +44,18 @@ Works today with real APIs.
 # Install
 npm install -g mcp-codegen
 
-# Create config
+# Initialize with demo API
+mcp-codegen quickstart
+
+# Or create custom config
 cat > codegen.config.json << 'EOF'
 {
   "sources": {
-    "mcp": {
-      "filesystem": {
-        "type": "mcp",
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
-      }
-    },
     "openapi": {
-      "github": {
+      "jsonplaceholder": {
         "type": "openapi",
-        "spec": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
-        "baseUrl": "https://api.github.com",
-        "auth": {
-          "type": "bearer",
-          "token": "${GITHUB_TOKEN}"
-        }
+        "spec": "https://jsonplaceholder.typicode.com/",
+        "baseUrl": "https://jsonplaceholder.typicode.com"
       }
     }
   }
@@ -79,19 +71,15 @@ mcp-codegen sync
 ```typescript
 import { call } from "./codegen/runtime";
 
-// Call MCP tool
-const file = await call("filesystem__read_file", { path: "/tmp/data.txt" });
+// Call the API
+const posts = await call("jsonplaceholder__getPosts", {});
+const user = await call("jsonplaceholder__getUser", { path: { id: "1" } });
 
-// Call REST API
-const user = await call("github__get_user", { path: { username: "anthropics" } });
-
-// Chain them together
-const repos = await call("github__list_repos", { path: { username: "anthropics" } });
-await call("filesystem__write_file", {
-  path: "/tmp/repos.json",
-  content: JSON.stringify(repos)
-});
+console.log(`User: ${user.name}`);
+console.log(`Posts: ${posts.length}`);
 ```
+
+For GitHub API and other complex examples, see the [Examples section](#examples) below.
 
 ---
 
