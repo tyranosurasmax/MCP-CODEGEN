@@ -44,42 +44,58 @@ Both adapters are production-ready and fully functional.
 # Install
 npm install -g mcp-codegen
 
-# Initialize with demo API
+# Initialize
 mcp-codegen quickstart
 
-# Or create custom config
+# Or create universal config (MCP + REST together)
 cat > codegen.config.json << 'EOF'
 {
   "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+      }
+    },
     "openapi": {
-      "jsonplaceholder": {
+      "github": {
         "type": "openapi",
-        "spec": "https://jsonplaceholder.typicode.com/",
-        "baseUrl": "https://jsonplaceholder.typicode.com"
+        "spec": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "baseUrl": "https://api.github.com"
       }
     }
   }
 }
 EOF
 
-# Generate wrappers
-mcp-codegen sync
-
-# Use in your code
+# Generate (creates 1,100+ type-safe functions)
+mcp-codegen quickstart
 ```
+
+**Use both sources in one project:**
 
 ```typescript
 import { call } from "./codegen/runtime";
 
-// Call the API
-const posts = await call("jsonplaceholder__getPosts", {});
-const user = await call("jsonplaceholder__getUser", { path: { id: "1" } });
+// MCP: Read local file
+const data = await call("filesystem__read_file", {
+  path: "/tmp/repos.json"
+});
 
-console.log(`User: ${user.name}`);
-console.log(`Posts: ${posts.length}`);
+// REST: Fetch from GitHub
+const repos = await call("github__list_repos", {
+  path: { username: "anthropics" }
+});
+
+// Universal: Chain them together
+await call("filesystem__write_file", {
+  path: "/tmp/anthropic-repos.json",
+  content: JSON.stringify(repos, null, 2)
+});
 ```
 
-For GitHub API and other complex examples, see the [Examples section](#examples) below.
+**Result:** 98% token reduction. One runtime. Universal.
 
 ---
 
