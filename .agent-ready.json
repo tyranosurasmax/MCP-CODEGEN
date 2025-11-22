@@ -1,7 +1,7 @@
 {
   "codeMode": true,
   "version": "1.1.0",
-  "generated": "2025-11-22T07:25:11.605Z",
+  "generated": "2025-11-22T07:31:18.638Z",
   "language": "typescript",
   "sources": {
     "mcp": [
@@ -16,10 +16,10 @@
     }
   },
   "tokenReduction": {
-    "traditional": 0,
+    "traditional": 1,
     "codeMode": 72,
-    "reduction": 0,
-    "savings": "0.0%"
+    "reduction": -71,
+    "savings": "-7100.0%"
   },
   "paths": {
     "runtime": "./codegen/runtime",

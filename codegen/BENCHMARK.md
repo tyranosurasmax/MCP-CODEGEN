@@ -1,18 +1,18 @@
 # Universal CODEGEN Token Usage Benchmark
 
-Generated: 2025-11-22T07:25:11.583Z
+Generated: 2025-11-22T07:31:18.621Z
 
 ## Results
 
 | Metric | Value |
 |--------|-------|
-| Raw API Specs (JSON) | 0 tokens |
+| Raw API Specs (JSON) | 1 tokens |
 | Generated Wrappers (TypeScript) | 72 tokens |
-| **Reduction** | **0%** |
+| **Reduction** | **-7100%** |
 
 ## Analysis
 
-By converting API specifications into TypeScript wrappers, we achieved a **0% reduction** in token usage.
+By converting API specifications into TypeScript wrappers, we achieved a **-7100% reduction** in token usage.
 
 This means:
 - Agents can work with 0x more tools in the same context window

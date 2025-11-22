@@ -1,7 +1,7 @@
 {
-  "rawToolsTokens": 0,
+  "rawToolsTokens": 1,
   "wrapperTokens": 72,
-  "reductionPercentage": 0,
+  "reductionPercentage": -7100,
   "estimationMethod": "chars/4",
-  "timestamp": "2025-11-22T07:25:11.583Z"
+  "timestamp": "2025-11-22T07:31:18.621Z"
 }
