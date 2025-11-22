@@ -133,7 +133,7 @@ export interface AgentReadyManifest {
 
 export interface BenchmarkData {
   rawToolsTokens: number;
-  wrapperTokens: number;
+  codeModeTokens: number;
   reductionPercentage: number;
   estimationMethod: string;
   timestamp: string;

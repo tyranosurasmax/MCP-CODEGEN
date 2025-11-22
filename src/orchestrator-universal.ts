@@ -56,7 +56,8 @@ export class UniversalOrchestrator {
         const sourceWrappers = await this.generateWrappersForSource(adapter);
         wrappers.push(...sourceWrappers);
       } catch (error) {
-        console.error(`Failed to generate wrappers for ${adapter.name}:`, error);
+        console.warn(`Skipping ${adapter.name} due to error:`, error instanceof Error ? error.message : String(error));
+        // Continue with other adapters
       }
     }
 
@@ -68,8 +69,8 @@ export class UniversalOrchestrator {
     // Generate universal runtime
     await this.generateUniversalRuntime();
 
-    // Generate benchmarks
-    const benchmark = await this.generateBenchmark(adapters);
+    // Generate benchmarks (pass wrappers to calculate manifest size)
+    const benchmark = await this.generateBenchmark(adapters, wrappers);
 
     // Generate manifest (must be after benchmark to include token reduction stats)
     const manifest = this.generateManifest(adapters, wrappers, benchmark);
@@ -290,7 +291,7 @@ export {
       },
       tokenReduction: {
         traditional: benchmark.rawToolsTokens,
-        codeMode: benchmark.wrapperTokens,
+        codeMode: benchmark.codeModeTokens,
         reduction: benchmark.reductionPercentage / 100,
         savings: `${benchmark.reductionPercentage.toFixed(1)}%`,
       },
@@ -406,8 +407,11 @@ example()
   /**
    * Generate benchmark data
    */
-  private async generateBenchmark(adapters: Array<MCPAdapter | OpenAPIAdapter>): Promise<BenchmarkData> {
-    // Estimate tokens for raw specs
+  private async generateBenchmark(
+    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    wrappers: GeneratedWrapper[]
+  ): Promise<BenchmarkData> {
+    // Estimate tokens for raw specs (what traditional approach sends in every prompt)
     let rawSpecsJson = '';
     for (const adapter of adapters) {
       try {
@@ -419,21 +423,19 @@ example()
     }
     const rawToolsTokens = this.estimateTokens(rawSpecsJson);
 
-    // Estimate tokens for generated wrappers
-    const wrapperFiles = this.getAllWrapperFiles();
-    let wrapperContent = '';
-    for (const file of wrapperFiles) {
-      wrapperContent += fs.readFileSync(file, 'utf-8');
-    }
-    const wrapperTokens = this.estimateTokens(wrapperContent);
+    // Code Mode: Calculate manifest size by building a minimal manifest
+    // This represents what the agent sees initially to discover available tools
+    const minimalManifest = this.buildMinimalManifest(adapters, wrappers);
+    const manifestJson = JSON.stringify(minimalManifest, null, 2);
+    const codeModeTokens = this.estimateTokens(manifestJson);
 
     const reductionPercentage = rawToolsTokens > 0
-      ? ((rawToolsTokens - wrapperTokens) / rawToolsTokens) * 100
+      ? ((rawToolsTokens - codeModeTokens) / rawToolsTokens) * 100
       : 0;
 
     const benchmark: BenchmarkData = {
       rawToolsTokens,
-      wrapperTokens,
+      codeModeTokens,
       reductionPercentage: Math.round(reductionPercentage * 100) / 100,
       estimationMethod: 'chars/4',
       timestamp: new Date().toISOString(),
@@ -456,6 +458,53 @@ example()
     );
 
     return benchmark;
+  }
+
+  /**
+   * Build a minimal manifest for benchmark calculation
+   * (excludes tokenReduction to avoid circular dependency)
+   */
+  private buildMinimalManifest(
+    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    wrappers: GeneratedWrapper[]
+  ): Partial<AgentReadyManifest> {
+    const sources: { mcp?: string[]; openapi?: string[]; total: number } = { total: 0 };
+    const toolsBySource: Record<string, number> = {};
+
+    for (const adapter of adapters) {
+      const sourceType = adapter instanceof MCPAdapter ? 'mcp' : 'openapi';
+      if (!sources[sourceType]) {
+        sources[sourceType] = [];
+      }
+      sources[sourceType]!.push(adapter.name);
+      sources.total += 1;
+
+      const adapterTools = wrappers.filter((w) => w.serverName === adapter.name);
+      toolsBySource[adapter.name] = adapterTools.length;
+    }
+
+    const capabilities: string[] = ['type-safety'];
+    if (sources.mcp) capabilities.push('mcp-tools');
+    if (sources.openapi) capabilities.push('rest-apis');
+    capabilities.push('connection-pooling');
+
+    return {
+      codeMode: true,
+      version: '1.1.0',
+      generated: new Date().toISOString(),
+      language: 'typescript',
+      sources,
+      tools: {
+        total: wrappers.length,
+        bySource: toolsBySource,
+      },
+      paths: {
+        runtime: `./${path.relative(process.cwd(), path.join(this.outputDir, 'runtime'))}`,
+        wrappers: `./${path.relative(process.cwd(), this.outputDir)}`,
+        config: './codegen.config.json',
+      },
+      capabilities,
+    };
   }
 
   private getAllWrapperFiles(): string[] {
@@ -491,8 +540,8 @@ Generated: ${benchmark.timestamp}
 
 | Metric | Value |
 |--------|-------|
-| Raw API Specs (JSON) | ${benchmark.rawToolsTokens.toLocaleString()} tokens |
-| Generated Wrappers (TypeScript) | ${benchmark.wrapperTokens.toLocaleString()} tokens |
+| Traditional (Raw Specs) | ${benchmark.rawToolsTokens.toLocaleString()} tokens |
+| Code Mode (Manifest) | ${benchmark.codeModeTokens.toLocaleString()} tokens |
 | **Reduction** | **${benchmark.reductionPercentage}%** |
 
 ## Analysis
@@ -500,17 +549,15 @@ Generated: ${benchmark.timestamp}
 By converting API specifications into TypeScript wrappers, we achieved a **${benchmark.reductionPercentage}% reduction** in token usage.
 
 This means:
-- Agents can work with ${Math.round(benchmark.rawToolsTokens / Math.max(benchmark.wrapperTokens, 1))}x more tools in the same context window
+- Agents can work with ${Math.round(benchmark.rawToolsTokens / Math.max(benchmark.codeModeTokens, 1))}x more tools in the same context window
 - Faster processing and lower API costs
 - Cleaner, more maintainable code
 - Type-safe integration with any API
 
 ## Sources Supported
 
-- MCP Servers (v1.1)
-- REST APIs / OpenAPI (v1.1)
-- GraphQL APIs (planned v1.2)
-- Databases (planned v1.2)
+- MCP Servers
+- REST APIs / OpenAPI
 
 ## Estimation Method
 

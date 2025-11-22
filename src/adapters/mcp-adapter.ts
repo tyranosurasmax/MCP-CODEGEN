@@ -38,19 +38,44 @@ export class MCPAdapter extends BaseAdapter {
         this.timeoutPromise(`List tools from ${this.name} timed out`),
       ]);
 
+      // Map tools and normalize schemas
       return (result.tools || []).map((tool: any) => ({
         name: tool.name,
-        description: tool.description,
-        inputSchema: tool.inputSchema,
-        outputSchema: tool.outputSchema,
+        description: tool.description || '',
+        inputSchema: this.normalizeSchema(tool.inputSchema),
+        outputSchema: this.normalizeSchema(tool.outputSchema),
       }));
     } catch (error) {
+      // Log but don't crash - allows other sources to work
+      console.error(`Failed to discover tools from ${this.name}:`, error);
       throw new AdapterExecutionError(
         `Failed to discover tools: ${error instanceof Error ? error.message : String(error)}`,
         this.name,
         this.type
       );
     }
+  }
+
+  /**
+   * Normalize JSON Schema to ensure compatibility
+   */
+  private normalizeSchema(schema: any): any {
+    if (!schema) {
+      return { type: 'object', properties: {} };
+    }
+
+    // If schema is missing type, assume object
+    if (typeof schema === 'object' && !schema.type) {
+      return { ...schema, type: 'object' };
+    }
+
+    // If type is an array, take the first non-null type
+    if (Array.isArray(schema.type)) {
+      const nonNullType = schema.type.find((t: string) => t !== 'null');
+      return { ...schema, type: nonNullType || 'object' };
+    }
+
+    return schema;
   }
 
   /**

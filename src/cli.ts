@@ -54,7 +54,7 @@ program
       );
       console.log(
         chalk.dim(
-          `  ${result.benchmark.rawToolsTokens.toLocaleString()} → ${result.benchmark.wrapperTokens.toLocaleString()} tokens`
+          `  ${result.benchmark.rawToolsTokens.toLocaleString()} → ${result.benchmark.codeModeTokens.toLocaleString()} tokens`
         )
       );
     } catch (error) {
@@ -186,10 +186,10 @@ program
 
       console.log(chalk.bold('\nToken Reduction:'));
       console.log(chalk.red(`  Traditional: ${result.benchmark.rawToolsTokens.toLocaleString()} tokens`));
-      console.log(chalk.green(`  Code Mode: ${result.benchmark.wrapperTokens.toLocaleString()} tokens`));
+      console.log(chalk.green(`  Code Mode: ${result.benchmark.codeModeTokens.toLocaleString()} tokens`));
       console.log(chalk.bold.yellow(`  Reduction: ${result.benchmark.reductionPercentage.toFixed(1)}%\n`));
 
-      const costSavings = ((result.benchmark.rawToolsTokens - result.benchmark.wrapperTokens) * 0.003 / 1000).toFixed(2);
+      const costSavings = ((result.benchmark.rawToolsTokens - result.benchmark.codeModeTokens) * 0.003 / 1000).toFixed(2);
       console.log(chalk.bold.green(`  Estimated savings: $${costSavings} per agent session\n`));
 
       spinner.succeed('Project initialized!');

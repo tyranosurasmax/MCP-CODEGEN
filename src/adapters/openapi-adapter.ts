@@ -111,7 +111,7 @@ export class OpenAPIAdapter extends BaseAdapter {
     try {
       if (this.config.spec.startsWith('http://') || this.config.spec.startsWith('https://')) {
         // Fetch from URL
-        const response = await axios.get(this.config.spec);
+        const response = await axios.get(this.config.spec, { maxRedirects: 10 });
         return response.data;
       } else {
         // Load from file

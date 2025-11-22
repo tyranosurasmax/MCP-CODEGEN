@@ -232,17 +232,20 @@ export {
 
     // Estimate tokens for generated wrappers
     const wrapperFiles = this.getAllWrapperFiles();
-    let wrapperContent = '';
-    for (const file of wrapperFiles) {
-      wrapperContent += fs.readFileSync(file, 'utf-8');
-    }
-    const wrapperTokens = this.estimateTokens(wrapperContent);
+    // Code Mode: Agent only sees .agent-ready.json manifest initially
+    const manifestPath = path.join(process.cwd(), '.agent-ready.json');
+    const manifestContent = fs.existsSync(manifestPath)
+      ? fs.readFileSync(manifestPath, 'utf-8')
+      : '{}';
+    const codeModeTokens = this.estimateTokens(manifestContent);
 
-    const reductionPercentage = ((rawToolsTokens - wrapperTokens) / rawToolsTokens) * 100;
+    const reductionPercentage = rawToolsTokens > 0
+      ? ((rawToolsTokens - codeModeTokens) / rawToolsTokens) * 100
+      : 0;
 
     const benchmark: BenchmarkData = {
       rawToolsTokens,
-      wrapperTokens,
+      codeModeTokens,
       reductionPercentage: Math.round(reductionPercentage * 100) / 100,
       estimationMethod: 'chars/4',
       timestamp: new Date().toISOString(),
@@ -330,8 +333,8 @@ Generated: ${benchmark.timestamp}
 
 | Metric | Value |
 |--------|-------|
-| Raw MCP Tools (JSON) | ${benchmark.rawToolsTokens.toLocaleString()} tokens |
-| Generated Wrappers (TypeScript) | ${benchmark.wrapperTokens.toLocaleString()} tokens |
+| Traditional (Raw Specs) | ${benchmark.rawToolsTokens.toLocaleString()} tokens |
+| Code Mode (Manifest) | ${benchmark.codeModeTokens.toLocaleString()} tokens |
 | **Reduction** | **${benchmark.reductionPercentage}%** |
 
 ## Analysis
@@ -339,7 +342,7 @@ Generated: ${benchmark.timestamp}
 By converting MCP tool definitions into TypeScript wrappers, we achieved a **${benchmark.reductionPercentage}% reduction** in token usage.
 
 This means:
-- Agents can work with ${Math.round(benchmark.rawToolsTokens / benchmark.wrapperTokens)}x more tools in the same context window
+- Agents can work with ${Math.round(benchmark.rawToolsTokens / Math.max(benchmark.codeModeTokens, 1))}x more tools in the same context window
 - Faster processing and lower API costs
 - Cleaner, more maintainable code
 
