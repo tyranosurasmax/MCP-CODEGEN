@@ -1,8 +1,13 @@
 /**
- * Core type definitions for mcp-codegen
+ * Core type definitions for universal codegen
  */
 
+// ============================================================================
+// MCP Types
+// ============================================================================
+
 export interface MCPServerConfig {
+  type?: 'mcp';
   command: string;
   args?: string[];
   env?: Record<string, string>;
@@ -11,6 +16,66 @@ export interface MCPServerConfig {
 
 export interface ServerMap {
   [serverName: string]: MCPServerConfig;
+}
+
+// ============================================================================
+// OpenAPI Types
+// ============================================================================
+
+export interface OpenAPIConfig {
+  type: 'openapi';
+  spec: string; // URL or file path to OpenAPI spec
+  baseUrl?: string; // Override base URL
+  headers?: Record<string, string>;
+  auth?: OpenAPIAuth;
+  disabled?: boolean;
+}
+
+export type OpenAPIAuth =
+  | { type: 'bearer'; token: string }
+  | { type: 'apikey'; name: string; in: 'header' | 'query'; value: string }
+  | { type: 'basic'; username: string; password: string }
+  | { type: 'oauth2'; token: string };
+
+export interface OpenAPISpec {
+  openapi: string;
+  info: {
+    title: string;
+    version: string;
+    description?: string;
+  };
+  servers?: Array<{
+    url: string;
+    description?: string;
+  }>;
+  paths: {
+    [path: string]: {
+      [method: string]: any;
+    };
+  };
+  components?: any;
+}
+
+// ============================================================================
+// Universal Types
+// ============================================================================
+
+export type SourceConfig = MCPServerConfig | OpenAPIConfig;
+
+export interface UniversalConfig {
+  sources: {
+    mcp?: { [name: string]: MCPServerConfig };
+    openapi?: { [name: string]: OpenAPIConfig };
+    // Future: graphql, database, etc.
+  };
+  outputDir?: string;
+  runtimePackage?: string;
+}
+
+export interface SourceInfo {
+  name: string;
+  type: string;
+  config: SourceConfig;
 }
 
 export interface ToolDefinition {
