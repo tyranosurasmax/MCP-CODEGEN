@@ -31,12 +31,10 @@ Code Mode is the future of AI-API integration:
 
 | Source Type | Status | Use Case |
 |-------------|--------|----------|
-| **MCP Servers** | v1.1 | Claude Desktop tools, local services |
-| **REST APIs** | v1.1 | GitHub, Stripe, any OpenAPI spec |
-| **GraphQL** | v1.2 (planned) | Shopify, Hasura, modern APIs |
-| **Databases** | v1.2 (planned) | PostgreSQL, MySQL, SQLite |
+| **MCP Servers** | Production | Claude Desktop tools, local services |
+| **REST APIs** | Production | GitHub, Stripe, any OpenAPI spec |
 
-**This is the only tool that does all of these.**
+Works today with real APIs.
 
 ---
 
@@ -141,8 +139,6 @@ Convert them all to tiny TypeScript wrappers:
 ### Universal Source Support
 - MCP servers (Model Context Protocol)
 - REST APIs (OpenAPI/Swagger 3.x)
-- GraphQL APIs (introspection) - v1.2 planned
-- SQL Databases (schema-based) - v1.2 planned
 
 ### Developer Experience
 - Type-safe TypeScript wrappers
@@ -356,60 +352,9 @@ mcp-codegen quickstart
 
 ---
 
-## Roadmap
-
-### v1.1 (Current)
-- MCP adapter
-- OpenAPI/REST adapter
-- Universal runtime
-- Type-safe wrappers
-
-### v1.2 (Next Month)
-- GraphQL adapter
-- Database adapter (PostgreSQL, MySQL, SQLite)
-- Streaming support
-- State management
-
-### v2.0 (Q1 2026)
-- Web UI for configuration
-- Advanced security (sandboxing)
-- Plugin ecosystem
-- Python wrapper generation
-
-### v3.0 (Q2 2026)
-- AI-powered tool composition
-- Automatic optimization
-- Multi-language support
-- Enterprise features
-
----
-
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
-- Development setup
-- Architecture guidelines
-- How to add source adapters
-- Testing strategies
-
-**Priority areas:**
-- GraphQL adapter implementation
-- Database adapter implementation
-- Security improvements
-- Documentation and examples
-
----
-
-## Project Status
-
-**Current Version:** v1.1.0  
-**Status:** Production-ready for MCP and REST APIs  
-**Maturity:** Early but functional
-
-**Battle-tested:**
-- MCP: Filesystem, SQLite servers
-- REST: GitHub, Stripe, public APIs
-- Production use: Early adopters welcome
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and architecture guidelines.
 
 ---
 

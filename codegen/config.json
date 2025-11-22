@@ -1,0 +1,16 @@
+{
+  "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "/tmp"
+        ]
+      }
+    }
+  },
+  "outputDir": "./demo-output"
+}
