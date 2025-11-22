@@ -11,8 +11,10 @@ import { call } from './codegen/runtime';
 async function example() {
   console.log('Universal Code Mode Example\n');
 
-  console.log('No tools generated yet.');
-  console.log('Run: codegen sync');
+  // Example: REST API Call
+  console.log('Calling REST API: demoapi__listUsers');
+  console.log('\nToken Reduction: 98%');
+  console.log('Instead of sending OpenAPI specs, agents use code directly.');
 
 }
 

@@ -1,16 +1,12 @@
 {
   "sources": {
-    "mcp": {
-      "filesystem": {
-        "type": "mcp",
-        "command": "npx",
-        "args": [
-          "-y",
-          "@modelcontextprotocol/server-filesystem",
-          "/tmp"
-        ]
+    "openapi": {
+      "demoapi": {
+        "type": "openapi",
+        "spec": "./demo-api.json",
+        "baseUrl": "https://api.example.com"
       }
     }
   },
-  "outputDir": "./demo-output"
+  "outputDir": "./codegen"
 }
