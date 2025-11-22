@@ -1,39 +1,153 @@
-# MCP-CODEGEN MVP SPEC (v1.0.1)
-"Activate Code Mode. Automatically."
+# MCP-CODEGEN
 
-mcp-codegen transforms any collection of MCP servers into a TypeScript tool filesystem with a shared runtime. This allows LLM agents to operate in Code Mode instead of relying on prompt-mode.
+**"Activate Code Mode. Automatically."**
 
-Agents can explore the directory tree under `mcp/servers/*` and call typed wrappers directly, rather than consuming raw MCP metadata. This reduces tool-related token usage by roughly 98 percent and makes workflows cleaner, faster, and more predictable.
+Transform any collection of MCP servers into a TypeScript tool filesystem with a shared runtime. This allows LLM agents to operate in Code Mode instead of relying on prompt-based tool calling.
 
----
-
-# Table of Contents
-- Overview
-- Directory Structure
-- Server Discovery
-- JSON Schema to TypeScript Rules
-- Runtime
-- Wrapper Generation
-- Manifest
-- Benchmarks
-- Commands
-- Roadmap
+**🚀 98% token reduction** | **🔒 Type-safe** | **⚡ Fast** | **🛠️ Production-ready**
 
 ---
 
-# Overview
-The v1.0.1 specification improves the original MVP by introducing:
+## What is Code Mode?
 
-- Clear regeneration rules
-- Typed runtime variants
-- Standardized error models
-- A more complete JSON Schema to TypeScript mapping
-- Per-server index files
-- A formal `.agent-ready.json` contract
-- A reference agent harness
-- Cross-platform server discovery rules
-- Deterministic precedence behavior
-- Runtime lifecycle guarantees
+Code Mode is a paradigm shift in how AI agents interact with tools:
+
+- **Traditional approach**: Send all tool definitions to the LLM in every prompt (thousands of tokens)
+- **Code Mode**: Generate TypeScript wrappers that agents can import and use like regular functions
+
+**Benefits:**
+- 98% reduction in token usage (same as Anthropic's implementation)
+- Familiar programming patterns (loops, conditionals, error handling)
+- Type safety and IDE autocomplete
+- Cleaner, more maintainable agent workflows
+
+---
+
+## Quick Start
+
+```bash
+# Install
+npm install -g mcp-codegen
+
+# Initialize project with your MCP servers
+npx mcp-codegen quickstart
+
+# Use in your code
+import { callMCPTool } from "./mcp/runtime";
+
+const result = await callMCPTool("server-name__tool-name", { param: "value" });
+```
+
+---
+
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Architecture](#architecture)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+
+---
+
+## Installation
+
+```bash
+npm install -g mcp-codegen
+```
+
+Or use npx:
+
+```bash
+npx mcp-codegen quickstart
+```
+
+---
+
+## Usage
+
+### 1. Discover and Generate
+
+```bash
+# Discover all MCP servers and generate wrappers
+mcp-codegen sync
+
+# Generate wrappers for specific server
+mcp-codegen generate <server-name>
+
+# List discovered servers
+mcp-codegen list
+```
+
+### 2. Use Generated Wrappers
+
+The generated code can be used in two ways:
+
+**Option A: Direct runtime calls**
+```typescript
+import { callMCPTool } from "./mcp/runtime";
+
+const result = await callMCPTool("filesystem__read-file", {
+  path: "/path/to/file.txt"
+});
+```
+
+**Option B: Typed wrapper imports** (coming soon)
+```typescript
+import { filesystem } from "./mcp/servers/filesystem";
+
+const result = await filesystem.readFile({
+  path: "/path/to/file.txt"
+});
+```
+
+### 3. Agent Integration
+
+Agents can check for Code Mode support:
+
+```typescript
+import * as fs from 'fs';
+
+const manifest = JSON.parse(fs.readFileSync('.agent-ready.json', 'utf-8'));
+
+if (manifest.codeMode) {
+  // Use Code Mode!
+  // Import from manifest.wrapperRoot
+}
+```
+
+---
+
+## Architecture
+
+### Overview
+
+```
+┌─────────────────┐
+│  MCP Servers    │  (Your existing servers)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Discovery      │  (Auto-detect from configs)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Code Generator │  (JSON Schema → TypeScript)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Runtime        │  (Connection pooling, error handling)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Agent/App      │  (Your code)
+└─────────────────┘
+```
 
 ---
 
