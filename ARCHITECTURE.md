@@ -97,25 +97,25 @@ Every source type implements this interface, ensuring consistency.
 
 ### Current Adapters
 
-#### DONE **MCPAdapter**
+#### **MCPAdapter**
 - Connects to MCP servers via stdio
 - Manages subprocess lifecycle
 - Handles retries and timeouts
 - Buffers streaming responses (v1.1)
 
-#### DONE **OpenAPIAdapter**
+#### **OpenAPIAdapter**
 - Loads OpenAPI 3.x specifications
 - Converts operations to tool definitions
 - Handles HTTP authentication (Bearer, API Key, Basic)
 - Makes REST API calls via axios
 
-#### PLANNED **GraphQLAdapter** (Planned v1.2)
+#### **GraphQLAdapter** (Planned v1.2)
 - Introspects GraphQL schemas
 - Converts queries/mutations to tools
 - Handles GraphQL-specific auth
 - Executes operations
 
-#### PLANNED **DatabaseAdapter** (Planned v1.2)
+#### **DatabaseAdapter** (Planned v1.2)
 - Introspects database schemas
 - Generates type-safe CRUD operations
 - Supports PostgreSQL, MySQL, SQLite
@@ -354,29 +354,27 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 
 ## Comparison to Alternatives
 
-### vs. Anthropic's Code Mode (MCP only)
-- DONE We support more source types
-- DONE Open source
-- DONE Platform agnostic
-- NOTE They have better security (sandboxing)
+### Anthropic's Code Mode (MCP only)
+- Supports MCP servers
+- Token reduction for MCP tools
+- We add: REST, GraphQL, database support
 
-### vs. Cloudflare's Code Mode
-- DONE We're not platform-locked
-- DONE We support more sources
-- DONE Simpler architecture
-- NOTE They have Workers isolation
+### Cloudflare's Code Mode
+- MCP and code execution on Workers platform
+- V8 isolate security
+- We add: Platform independence, more source types
 
-### vs. OpenAPI Generator
-- DONE We optimize for LLM context (98% reduction)
-- DONE We support multiple source types
-- NOTE They have more mature codegen
+### OpenAPI Generator
+- REST API code generation
+- Mature codegen features
+- We add: LLM optimization (98% reduction), multi-source support
 
-### vs. Prisma (Databases)
-- DONE We support multiple source types
-- NOTE They have better DB features
-- NOTE They have migrations
+### Prisma (Databases)
+- Database abstraction and migrations
+- Advanced DB features
+- We add: Multi-source support beyond databases
 
-**Our Advantage:** Universal approach with LLM optimization.
+**Our Approach:** Universal support with LLM optimization.
 
 ---
 
