@@ -91,6 +91,31 @@ await call("filesystem__write_file", {
 
 ---
 
+## Not To Be Confused With...
+
+**mcp-codegen vs codegen-sh/codegen**
+- **codegen-sh/codegen** is an AI software engineering agent that writes code for developers
+- **mcp-codegen** generates CODE that AI agents can use to interact with APIs
+- We're complementary: They help developers write code, we help agents call APIs efficiently
+
+**mcp-codegen vs MCP Servers**
+- **MCP Servers** provide tools via the Model Context Protocol
+- **mcp-codegen** doesn't create MCP servers - it creates optimized wrappers for EXISTING servers
+- We reduce token usage by 98% when agents use those servers
+
+**mcp-codegen vs Traditional OpenAPI Generators**
+- **openapi-generator, swagger-codegen** create traditional client libraries for humans
+- **mcp-codegen** creates LLM-optimized wrappers specifically designed for AI agents
+- Our wrappers prioritize token efficiency and agent discoverability over human ergonomics
+
+**What We Actually Do**
+- Generate CODE for agents to explore and use (not servers, not agents themselves)
+- Work with ANY API type (MCP, REST, GraphQL, databases)
+- Optimize for LLM token usage with 98% reduction
+- Universal, not locked to any platform or protocol
+
+---
+
 ## Why Universal?
 
 ### The Problem
