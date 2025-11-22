@@ -2,6 +2,12 @@
 
 **Universal Code Mode for APIs, Services, and Tools**
 
+![Status](https://img.shields.io/badge/status-active%20development-orange)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![License](https://img.shields.io/badge/license-Apache%202.0-green)
+
+> **ACTIVE DEVELOPMENT**: This project is under active development. See commit history for latest updates.
+
 Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
 **98% token reduction | Type-safe | Universal | Production-ready**
@@ -409,7 +415,28 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+Apache 2.0 License - see [LICENSE](./LICENSE) for details.
+
+This project includes patent protection under Apache 2.0.
+See [NOTICE](./NOTICE) and [COPYRIGHT](./COPYRIGHT) for attribution requirements.
+
+---
+
+## Reference Implementation
+
+**This is the original and reference implementation of Universal Code Mode.**
+
+Key contributions originated in this project:
+- Universal adapter pattern for multi-source API integration (November 2025)
+- .agent-ready.json agent discovery mechanism (November 2025)
+- Type-safe wrapper generation across MCP, OpenAPI, and future sources (November 2025)
+- 98% token reduction validation and benchmarking methodology (November 2025)
+
+First public commit: November 2025
+Repository: https://github.com/tyranosurasmax/MCP-CODEGEN
+
+This project extends the Code Mode concept introduced by Anthropic to work universally
+across all API types, not just MCP servers.
 
 ---
 

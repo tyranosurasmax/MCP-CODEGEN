@@ -1,0 +1,19 @@
+MCP-CODEGEN
+Copyright 2025 [COPYRIGHT HOLDER]
+
+This product includes software developed at:
+- GitHub: https://github.com/tyranosurasmax/MCP-CODEGEN
+
+ORIGINAL WORK NOTICE:
+This project introduces the concept of Universal Code Mode - a novel approach
+to reducing LLM token usage when working with multiple API types (MCP, REST,
+GraphQL, databases) by generating optimized TypeScript wrappers.
+
+First public release: November 2025
+Original implementation date: November 2025
+
+The universal adapter pattern, .agent-ready.json discovery mechanism, and
+multi-source code generation approach are original contributions of this project.
+
+This software is provided under the Apache License 2.0.
+See LICENSE file for full license text.

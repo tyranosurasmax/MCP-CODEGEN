@@ -1,0 +1,22 @@
+Copyright Notice
+================
+
+Copyright (c) 2025 [COPYRIGHT HOLDER]
+
+All rights reserved under the Apache License, Version 2.0.
+
+This project represents original work in the field of LLM-API integration,
+specifically the concept and implementation of "Universal Code Mode" for
+reducing token usage across multiple API types.
+
+Key Innovations:
+- Universal adapter pattern for multi-source API integration
+- .agent-ready.json agent discovery mechanism
+- 98% token reduction through generated code exploration
+- Type-safe wrapper generation for MCP, OpenAPI, and future sources
+
+Original repository: https://github.com/tyranosurasmax/MCP-CODEGEN
+First commit: November 2025
+
+For licensing information, see the LICENSE file.
+For contribution guidelines, see CONTRIBUTING.md.
