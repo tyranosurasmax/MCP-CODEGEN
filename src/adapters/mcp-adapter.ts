@@ -30,45 +30,29 @@ export class MCPAdapter extends BaseAdapter {
    * Discover tools from the MCP server
    */
   async discover(): Promise<ToolDefinition[]> {
-    const clientInfo = await this.getClient();
-    const client = clientInfo;
+    const client = await this.getClient();
 
     try {
-      // Send raw JSON-RPC request to bypass SDK validation
-      const transport: any = (client as any)._transport || (client as any).transport;
+      const result = await Promise.race([
+        client.listTools(),
+        this.timeoutPromise(`List tools from ${this.name} timed out`),
+      ]);
 
-      if (transport && transport.send) {
-        // Direct JSON-RPC call
-        const response = await Promise.race([
-          transport.send({
-            jsonrpc: '2.0',
-            id: Date.now(),
-            method: 'tools/list',
-            params: {}
-          }),
-          this.timeoutPromise(`List tools timed out`),
-        ]) as any;
-
-        const tools = response.result?.tools || response.tools || [];
-        return tools.map((tool: any) => ({
-          name: tool.name || 'unknown',
-          description: tool.description || '',
-          inputSchema: this.normalizeSchema(tool.inputSchema),
-          outputSchema: this.normalizeSchema(tool.outputSchema),
-        }));
-      }
-
-      // Fallback to regular client method
-      const result = await client.listTools();
+      // Map tools and normalize schemas
       return (result.tools || []).map((tool: any) => ({
         name: tool.name,
-        description: tool.description,
+        description: tool.description || '',
         inputSchema: this.normalizeSchema(tool.inputSchema),
         outputSchema: this.normalizeSchema(tool.outputSchema),
       }));
     } catch (error) {
-      console.warn(`Tool discovery issue for ${this.name}, returning empty list`);
-      return [];
+      // Log but don't crash - allows other sources to work
+      console.error(`Failed to discover tools from ${this.name}:`, error);
+      throw new AdapterExecutionError(
+        `Failed to discover tools: ${error instanceof Error ? error.message : String(error)}`,
+        this.name,
+        this.type
+      );
     }
   }
 
