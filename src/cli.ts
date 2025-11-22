@@ -133,7 +133,7 @@ program
   .command('quickstart')
   .description('Initialize a new mcp-codegen project')
   .action(async () => {
-    console.log(chalk.bold('\n🚀 MCP-CODEGEN Quickstart\n'));
+    console.log(chalk.bold('\nCODEGEN Quickstart\n'));
 
     const spinner = ora('Setting up project...').start();
 

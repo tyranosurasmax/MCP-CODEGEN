@@ -368,10 +368,10 @@ This means:
 
 ## Sources Supported
 
-- ✅ MCP Servers
-- ✅ REST APIs (OpenAPI)
-- 🔜 GraphQL APIs
-- 🔜 Databases
+- MCP Servers (v1.1)
+- REST APIs / OpenAPI (v1.1)
+- GraphQL APIs (planned v1.2)
+- Databases (planned v1.2)
 
 ## Estimation Method
 

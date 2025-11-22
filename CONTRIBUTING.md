@@ -1,6 +1,6 @@
-# Contributing to MCP-CODEGEN
+# Contributing to CODEGEN
 
-Thank you for your interest in contributing! This project is racing to become the standard Code Mode implementation for MCP, so we move fast.
+Thank you for your interest in contributing! This project aims to provide a universal code generation platform for API integrations.
 
 ## Development Setup
 
