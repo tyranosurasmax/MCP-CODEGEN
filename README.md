@@ -30,7 +30,7 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
 
 **We made it universal:**
-- ✅ Works with **any API type** - MCP, REST, GraphQL, databases, not just one protocol
+- ✅ Works with **any API type** - MCP, REST, GraphQL not just one protocol
 - ✅ **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
 - ✅ **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
 - ✅ **Open source** - Apache 2.0 licensed, extensible architecture
@@ -152,7 +152,6 @@ Every API type has massive specifications:
 - **MCP**: Tool definitions (152K tokens)
 - **OpenAPI**: REST specs (200K+ tokens)
 - **GraphQL**: Schema introspection (100K+ tokens)
-- **Databases**: Schema definitions (50K+ tokens)
 
 ### The Solution
 Convert them all to tiny TypeScript wrappers:
@@ -194,7 +193,7 @@ Convert them all to tiny TypeScript wrappers:
 ```
 ┌─────────────────────────────┐
 │   ANY API SOURCE            │
-│  MCP | REST | GraphQL | DB  │
+│  MCP | REST | GraphQL       │
 └──────────────┬──────────────┘
                │
         ┌──────▼────────┐
@@ -342,7 +341,7 @@ mcp-codegen quickstart
 
 ### vs. Anthropic's MCP Code Mode
 **Improvements:**
-- ✅ Universal (REST, GraphQL, databases) vs. MCP-only
+- ✅ Universal (REST, GraphQL) vs. MCP-only
 - ✅ Production infrastructure (retries, auth, instrumentation)
 - ✅ Open source and extensible
 - ✅ Same 98%+ token reduction
@@ -354,7 +353,7 @@ mcp-codegen quickstart
 ### vs. Cloudflare's Code Mode
 **Improvements:**
 - ✅ Platform-agnostic (runs anywhere) vs. Workers-only
-- ✅ More source types (MCP, REST, GraphQL, DB)
+- ✅ More source types (MCP, REST, GraphQL)
 - ✅ Enterprise features (auth, retries, monitoring)
 - ✅ Open source with Apache 2.0 license
 
@@ -441,7 +440,7 @@ This project **significantly extends and improves upon** groundbreaking work by:
 ### Anthropic's MCP Code Mode
 - **What they pioneered:** Model Context Protocol and Code Mode concept for MCP servers
 - **What they proved:** Token reduction makes LLM-tool integration practical
-- **What we added:** Universal support (REST, GraphQL, databases), production infrastructure, open source implementation
+- **What we added:** Universal support (REST, GraphQL), production infrastructure, open source implementation
 - [Read the MCP announcement](https://www.anthropic.com/news/model-context-protocol) | [MCP Specification](https://spec.modelcontextprotocol.io/)
 
 ### Cloudflare's Code Mode

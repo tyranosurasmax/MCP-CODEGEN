@@ -483,11 +483,19 @@ example()
     adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
     wrappers: GeneratedWrapper[]
   ): Partial<AgentReadyManifest> {
-    const sources: { mcp?: string[]; openapi?: string[]; total: number } = { total: 0 };
+    const sources: { mcp?: string[]; openapi?: string[]; graphql?: string[]; total: number } = { total: 0 };
     const toolsBySource: Record<string, number> = {};
 
     for (const adapter of adapters) {
-      const sourceType = adapter instanceof MCPAdapter ? 'mcp' : 'openapi';
+      let sourceType: 'mcp' | 'openapi' | 'graphql';
+      if (adapter instanceof MCPAdapter) {
+        sourceType = 'mcp';
+      } else if (adapter instanceof GraphQLAdapter) {
+        sourceType = 'graphql';
+      } else {
+        sourceType = 'openapi';
+      }
+
       if (!sources[sourceType]) {
         sources[sourceType] = [];
       }
@@ -501,6 +509,7 @@ example()
     const capabilities: string[] = ['type-safety'];
     if (sources.mcp) capabilities.push('mcp-tools');
     if (sources.openapi) capabilities.push('rest-apis');
+    if (sources.graphql) capabilities.push('graphql-apis');
     capabilities.push('connection-pooling');
 
     return {
