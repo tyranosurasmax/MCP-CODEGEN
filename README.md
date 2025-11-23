@@ -16,14 +16,39 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
 ## What is Universal Code Mode?
 
-Code Mode is the future of AI-API integration:
+**Code Mode, evolved.** This project takes the Code Mode concept pioneered by Anthropic and Cloudflare and makes it **universal, production-ready, and significantly more powerful.**
+
+### The Problem Code Mode Solves
 
 - **Traditional approach**: Send massive API specs to LLMs in every prompt (150K+ tokens)
-- **Code Mode**: Generate tiny TypeScript wrappers agents can import like regular functions
+- **Code Mode approach**: Generate tiny TypeScript wrappers agents can import like regular functions
 
 **The Result:** 98% fewer tokens, better performance, cleaner code.
 
-**The Innovation:** Works with ANY API source—not just one protocol.
+### How MCP-CODEGEN Improves on Code Mode
+
+While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
+
+**We made it universal:**
+- ✅ Works with **any API type** - MCP, REST, GraphQL, databases, not just one protocol
+- ✅ **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
+- ✅ **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
+- ✅ **Open source** - Apache 2.0 licensed, extensible architecture
+- ✅ **Proven at scale** - 1,100+ tools from GitHub API with 99.94% reduction
+
+**Key innovations:**
+- Universal adapter pattern for multi-source integration
+- Standardized `.agent-ready.json` discovery mechanism
+- Automatic retry with exponential backoff
+- 5 authentication types with environment variable resolution
+- Runtime schema normalization for inconsistent APIs
+- Full instrumentation and telemetry support
+
+**Inspired by pioneers:**
+- [Anthropic's MCP Code Mode](https://www.anthropic.com/news/model-context-protocol) - Introduced the concept
+- [Cloudflare's Code Mode](https://blog.cloudflare.com/cloudflare-workers-code-mode) - Demonstrated platform integration
+
+**What we added:** Everything needed to make Code Mode work **universally** in **production** across **any API type**.
 
 ---
 
@@ -315,17 +340,26 @@ mcp-codegen quickstart
 
 ## Comparison
 
-### vs. Anthropic's Code Mode (MCP only)
-- We support REST, GraphQL, databases
-- Open source
-- Same 98% reduction
-- They may have better security (sandboxing)
+### vs. Anthropic's MCP Code Mode
+**Improvements:**
+- ✅ Universal (REST, GraphQL, databases) vs. MCP-only
+- ✅ Production infrastructure (retries, auth, instrumentation)
+- ✅ Open source and extensible
+- ✅ Same 98%+ token reduction
+- ✅ Works with existing MCP servers
+
+**Trade-offs:**
+- ⚠️ No built-in sandboxing (run in trusted environments)
 
 ### vs. Cloudflare's Code Mode
-- Platform-agnostic (not Workers-only)
-- More source types
-- Simpler architecture
-- They have V8 isolate sandboxing
+**Improvements:**
+- ✅ Platform-agnostic (runs anywhere) vs. Workers-only
+- ✅ More source types (MCP, REST, GraphQL, DB)
+- ✅ Enterprise features (auth, retries, monitoring)
+- ✅ Open source with Apache 2.0 license
+
+**Trade-offs:**
+- ⚠️ No V8 isolate sandboxing (different security model)
 
 ### vs. OpenAPI Generator
 - LLM-optimized (98% token reduction)
@@ -402,13 +436,37 @@ across all API types, not just MCP servers.
 
 ## Acknowledgments
 
-Inspired by:
-- **Anthropic's Code Mode** - Original MCP concept
-- **Cloudflare's Code Mode** - V8 isolate approach
+This project **significantly extends and improves upon** groundbreaking work by:
+
+### Anthropic's MCP Code Mode
+- **What they pioneered:** Model Context Protocol and Code Mode concept for MCP servers
+- **What they proved:** Token reduction makes LLM-tool integration practical
+- **What we added:** Universal support (REST, GraphQL, databases), production infrastructure, open source implementation
+- [Read the MCP announcement](https://www.anthropic.com/news/model-context-protocol) | [MCP Specification](https://spec.modelcontextprotocol.io/)
+
+### Cloudflare's Code Mode
+- **What they pioneered:** Code Mode on Workers platform with V8 isolate security
+- **What they proved:** Code generation can replace verbose tool definitions
+- **What we added:** Platform independence, multi-source support, enterprise features, Apache 2.0 license
+- [Read the Code Mode article](https://blog.cloudflare.com/cloudflare-workers-code-mode)
+
+### Our Innovations
+
+**Universal Code Mode is not just an implementation—it's a significant evolution:**
+
+1. **Universal Adapter Pattern** - Works with any API type, not locked to one protocol or platform
+2. **Production Infrastructure** - Error handling, retries, auth, instrumentation out of the box
+3. **Standardized Discovery** - `.agent-ready.json` format for agent tool discovery
+4. **Schema Normalization** - Handles inconsistent APIs automatically
+5. **Enterprise Auth** - 5 auth types with env var resolution and token refresh
+6. **Open Source** - Apache 2.0, extensible, community-driven
+
+**Additional Inspiration:**
 - **OpenAPI Generator** - REST API codegen patterns
 - **Prisma** - Database abstraction excellence
+- **The MCP Community** - Tool authors and early adopters
 
-We took these ideas and made them **universal**.
+**We took the Code Mode concept and made it production-ready, universal, and open source.**
 
 ---
 

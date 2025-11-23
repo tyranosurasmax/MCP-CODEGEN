@@ -288,6 +288,15 @@ async function resolveBasicAuth(config: BasicAuthConfig): Promise<AuthResult> {
  * Resolve OAuth2 authentication
  */
 async function resolveOAuth2Auth(config: OAuth2AuthConfig): Promise<AuthResult> {
+  // Check for fetch availability (Node 18+ required)
+  if (typeof fetch === "undefined") {
+    throw authFailedError(
+      "oauth2",
+      "OAuth2 authentication requires Node.js 18+ (for native fetch support). " +
+      "Please upgrade Node.js or install 'node-fetch' polyfill."
+    );
+  }
+
   const clientId = substituteEnvVars(config.clientId);
   const clientSecret = config.clientSecret ? substituteEnvVars(config.clientSecret) : undefined;
 
@@ -462,6 +471,15 @@ export async function refreshAuth(context: AuthContext): Promise<AuthResult> {
     const oauth2Config = context.config as OAuth2AuthConfig;
 
     if (oauth2Config.refreshToken && oauth2Config.tokenUrl) {
+      // Check for fetch availability (Node 18+ required)
+      if (typeof fetch === "undefined") {
+        throw authFailedError(
+          "oauth2",
+          "OAuth2 token refresh requires Node.js 18+ (for native fetch support). " +
+          "Please upgrade Node.js or install 'node-fetch' polyfill."
+        );
+      }
+
       const refreshToken = substituteEnvVars(oauth2Config.refreshToken);
       const clientId = substituteEnvVars(oauth2Config.clientId);
       const clientSecret = oauth2Config.clientSecret

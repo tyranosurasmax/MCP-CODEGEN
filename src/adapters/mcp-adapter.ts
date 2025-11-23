@@ -127,6 +127,34 @@ export class MCPAdapter extends BaseAdapter {
    * Execute an MCP tool
    */
   async execute(toolName: string, params: any): Promise<any> {
+    if (this.useRawClient) {
+      return this.executeWithRawClient(toolName, params);
+    }
+    return this.executeWithSDK(toolName, params);
+  }
+
+  /**
+   * Execute tool using raw client
+   */
+  private async executeWithRawClient(toolName: string, params: any): Promise<any> {
+    const client = await this.getRawClient();
+
+    try {
+      const result = await Promise.race([
+        client.callTool(toolName, params || {}),
+        this.timeoutPromise(`Tool call ${toolName} timed out`),
+      ]);
+
+      return this.extractResult(result);
+    } catch (error) {
+      return this.handleRawToolError(toolName, params, error);
+    }
+  }
+
+  /**
+   * Execute tool using SDK client
+   */
+  private async executeWithSDK(toolName: string, params: any): Promise<any> {
     const client = await this.getClient();
 
     try {
@@ -284,7 +312,7 @@ export class MCPAdapter extends BaseAdapter {
   }
 
   /**
-   * Handle tool execution errors with retry logic
+   * Handle tool execution errors with retry logic (SDK client)
    */
   private async handleToolError(toolName: string, params: any, error: any): Promise<any> {
     if (this.clientInfo && this.clientInfo.retries < this.maxRetries) {
@@ -301,7 +329,35 @@ export class MCPAdapter extends BaseAdapter {
       }
 
       // Retry the call
-      return this.execute(toolName, params);
+      return this.executeWithSDK(toolName, params);
+    }
+
+    throw new AdapterExecutionError(
+      `Tool call failed: ${error instanceof Error ? error.message : String(error)}`,
+      this.name,
+      this.type
+    );
+  }
+
+  /**
+   * Handle tool execution errors with retry logic (raw client)
+   */
+  private async handleRawToolError(toolName: string, params: any, error: any): Promise<any> {
+    if (this.rawClientInfo && this.rawClientInfo.retries < this.maxRetries) {
+      console.warn(`Retrying ${toolName} after error (attempt ${this.rawClientInfo.retries + 1}/${this.maxRetries})`);
+
+      // Close and reconnect
+      const currentRetries = this.rawClientInfo.retries;
+      await this.close();
+
+      // Reconnect and retry
+      await this.getRawClient();
+      if (this.rawClientInfo) {
+        this.rawClientInfo.retries = currentRetries + 1;
+      }
+
+      // Retry the call
+      return this.executeWithRawClient(toolName, params);
     }
 
     throw new AdapterExecutionError(

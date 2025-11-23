@@ -74,6 +74,14 @@ export class RawMCPClient extends EventEmitter {
     return result.tools || [];
   }
 
+  async callTool(name: string, args: any): Promise<any> {
+    const result = await this.sendRequest('tools/call', {
+      name,
+      arguments: args || {}
+    });
+    return result;
+  }
+
   async close(): Promise<void> {
     if (this.process) {
       this.process.kill();
