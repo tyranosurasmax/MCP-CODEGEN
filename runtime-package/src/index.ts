@@ -1,12 +1,13 @@
 /**
- * @mcp-codegen/runtime
- * Standalone runtime package for generated MCP wrappers
+ * MCP Runtime
+ * Manages connections to MCP servers and tool execution
  */
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ServerMap, MCPServerConfig } from '../types';
 
 export class MCPConnectionError extends Error {
   constructor(message: string) {
@@ -36,16 +37,6 @@ export class MCPTimeoutError extends Error {
   }
 }
 
-interface MCPServerConfig {
-  command: string;
-  args?: string[];
-  env?: Record<string, string>;
-}
-
-interface ServerMap {
-  [serverName: string]: MCPServerConfig;
-}
-
 interface ClientInfo {
   client: Client;
   transport: StdioClientTransport;
@@ -56,7 +47,7 @@ interface ClientInfo {
 export class MCPRuntime {
   private clients = new Map<string, ClientInfo>();
   private serverMap: ServerMap = {};
-  private timeout: number = 60000;
+  private timeout: number = 60000; // 60 seconds
   private maxRetries: number = 2;
 
   constructor(serverMapPath?: string) {
@@ -65,21 +56,33 @@ export class MCPRuntime {
     }
   }
 
+  /**
+   * Load server map from file
+   */
   loadServerMap(serverMapPath: string): void {
     const content = fs.readFileSync(serverMapPath, 'utf-8');
     this.serverMap = JSON.parse(content);
   }
 
+  /**
+   * Set timeout for tool calls (in milliseconds)
+   */
   setTimeout(ms: number): void {
     this.timeout = ms;
   }
 
+  /**
+   * Get or create MCP client for a server
+   */
   async getClient(serverName: string): Promise<Client> {
+    // Return existing client if connected
     if (this.clients.has(serverName)) {
       const info = this.clients.get(serverName)!;
+      // TODO: Add health check
       return info.client;
     }
 
+    // Create new client
     const config = this.serverMap[serverName];
     if (!config) {
       throw new MCPConnectionError(`Server not found: ${serverName}`);
@@ -88,6 +91,9 @@ export class MCPRuntime {
     return this.connectServer(serverName, config);
   }
 
+  /**
+   * Connect to an MCP server
+   */
   private async connectServer(serverName: string, config: MCPServerConfig): Promise<Client> {
     const transport = new StdioClientTransport({
       command: config.command,
@@ -123,6 +129,9 @@ export class MCPRuntime {
     }
   }
 
+  /**
+   * Call an MCP tool (untyped)
+   */
   async callMCPTool(toolName: string, params?: any): Promise<any> {
     const [serverName, actualToolName] = this.parseToolName(toolName);
     const client = await this.getClient(serverName);
@@ -139,10 +148,16 @@ export class MCPRuntime {
     }
   }
 
+  /**
+   * Call an MCP tool (typed)
+   */
   async callMCPToolTyped<P, R>(toolName: string, params: P): Promise<R> {
     return this.callMCPTool(toolName, params) as Promise<R>;
   }
 
+  /**
+   * List all available tools from a server
+   */
   async listTools(serverName: string): Promise<any[]> {
     const client = await this.getClient(serverName);
 
@@ -160,6 +175,9 @@ export class MCPRuntime {
     }
   }
 
+  /**
+   * Close all connections
+   */
   async closeAll(): Promise<void> {
     const promises = Array.from(this.clients.entries()).map(async ([name, info]) => {
       try {
@@ -173,6 +191,9 @@ export class MCPRuntime {
     this.clients.clear();
   }
 
+  /**
+   * Close specific server connection
+   */
   async closeServer(serverName: string): Promise<void> {
     const info = this.clients.get(serverName);
     if (!info) return;
@@ -196,6 +217,7 @@ export class MCPRuntime {
 
   private extractResult(result: any): any {
     if (result.content && Array.isArray(result.content)) {
+      // MCP returns content as array of content items
       if (result.content.length === 0) return null;
       if (result.content.length === 1) {
         return result.content[0].text || result.content[0];
@@ -208,13 +230,16 @@ export class MCPRuntime {
   private async handleToolError(serverName: string, toolName: string, error: any): Promise<any> {
     const info = this.clients.get(serverName);
 
+    // Try to restart server on connection errors
     if (info && info.retries < this.maxRetries) {
       console.warn(`Retrying ${toolName} after error (attempt ${info.retries + 1}/${this.maxRetries})`);
 
+      // Close and reconnect
       await this.closeServer(serverName);
       info.retries++;
       this.clients.set(serverName, info);
 
+      // Retry the call
       return this.callMCPTool(toolName);
     }
 
@@ -230,11 +255,12 @@ export class MCPRuntime {
   }
 }
 
-// Singleton instance
+// Export singleton instance
 let runtimeInstance: MCPRuntime | null = null;
 
 export function getRuntime(): MCPRuntime {
   if (!runtimeInstance) {
+    // Try to load from default location
     const defaultPath = path.join(process.cwd(), 'mcp', 'server-map.json');
     runtimeInstance = new MCPRuntime(
       fs.existsSync(defaultPath) ? defaultPath : undefined

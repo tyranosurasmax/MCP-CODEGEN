@@ -1,0 +1,24 @@
+{
+  "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+      }
+    },
+    "openapi": {
+      "testapi": {
+        "type": "openapi",
+        "spec": "https://api.example.com/openapi.json",
+        "baseUrl": "https://api.example.com",
+        "auth": {
+          "type": "bearer",
+          "token": "${API_TOKEN}"
+        }
+      }
+    }
+  },
+  "outputDir": "./test-output",
+  "runtimePackage": "codegen/runtime"
+}

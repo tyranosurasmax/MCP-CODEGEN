@@ -1,0 +1,10 @@
+{
+  "sources": {
+    "mcp": {
+      "broken": {
+        "type": "mcp",
+        "command": "npx"
+      }
+    }
+  }
+}
