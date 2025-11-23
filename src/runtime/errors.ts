@@ -361,13 +361,10 @@ export function wrapError(error: unknown, defaultMessage = "Unknown error"): Cod
 
 /**
  * Check if an error should be retried
+ *
+ * Note: maxAttempts check is handled by the caller (retry-policy.ts)
  */
-export function shouldRetry(error: CodegenError, attempt: number, maxAttempts: number): boolean {
-  // Exceeded max attempts
-  if (attempt >= maxAttempts) {
-    return false;
-  }
-
+export function shouldRetry(error: CodegenError, attempt: number): boolean {
   // Check retryable flag
   if (!error.retryable) {
     return false;
