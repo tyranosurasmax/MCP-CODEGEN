@@ -19,7 +19,7 @@ const program = new Command();
 program
   .name('mcp-codegen')
   .description('Transform MCP servers into TypeScript tool filesystems')
-  .version('1.0.1');
+  .version('1.1.0');
 
 /**
  * Sync command: discover and generate all wrappers

@@ -293,12 +293,27 @@ export class OpenAPIAdapter extends BaseAdapter {
 
   /**
    * Resolve environment variables in strings
+   * Supports: ${VAR}, $VAR, ${VAR:-default}
    */
   private resolveEnvVar(value: string): string {
-    if (value.startsWith('${') && value.endsWith('}')) {
-      const envVar = value.slice(2, -1);
-      return process.env[envVar] || '';
-    }
+    // Handle ${VAR:-default} syntax
+    const withDefault = /\$\{([A-Z_][A-Z0-9_]*):-([^}]*)\}/gi;
+    value = value.replace(withDefault, (_, varName, defaultValue) => {
+      return process.env[varName] ?? defaultValue;
+    });
+
+    // Handle ${VAR} syntax
+    const withBraces = /\$\{([A-Z_][A-Z0-9_]*)\}/gi;
+    value = value.replace(withBraces, (_, varName) => {
+      return process.env[varName] ?? "";
+    });
+
+    // Handle $VAR syntax (no braces)
+    const withoutBraces = /\$([A-Z_][A-Z0-9_]*)/g;
+    value = value.replace(withoutBraces, (_, varName) => {
+      return process.env[varName] ?? "";
+    });
+
     return value;
   }
 }
