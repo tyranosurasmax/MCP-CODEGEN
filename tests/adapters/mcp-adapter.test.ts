@@ -206,19 +206,8 @@ describe('MCPAdapter', () => {
     }, 10000);
   });
 
-  describe('Raw Client vs SDK Client', () => {
-    it('should use raw client when specified', async () => {
-      const config: MCPServerConfig = {
-        command: 'node',
-        args: ['test.js'],
-      };
-
-      const adapter = new MCPAdapter('test-server', config, { useRawClient: true });
-
-      await expect(adapter.discover()).rejects.toThrow();
-    });
-
-    it('should use SDK client by default', async () => {
+  describe('Client Behavior', () => {
+    it('should use raw client by default', async () => {
       const config: MCPServerConfig = {
         command: 'node',
         args: ['test.js'],
@@ -226,6 +215,7 @@ describe('MCPAdapter', () => {
 
       const adapter = new MCPAdapter('test-server', config);
 
+      // Raw client is used by default
       await expect(adapter.discover()).rejects.toThrow();
     });
   });

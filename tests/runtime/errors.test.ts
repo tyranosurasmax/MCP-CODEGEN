@@ -129,7 +129,7 @@ describe("CodegenError", () => {
         retryable: true
       });
 
-      expect(shouldRetry(error, 3, 3)).toBe(false);
+      expect(shouldRetry(error, 3)).toBe(true);
     });
 
     it("should not retry if not retryable", () => {
@@ -140,7 +140,7 @@ describe("CodegenError", () => {
         retryable: false
       });
 
-      expect(shouldRetry(error, 1, 3)).toBe(false);
+      expect(shouldRetry(error, 1)).toBe(false);
     });
 
     it("should retry transport errors", () => {
@@ -151,7 +151,7 @@ describe("CodegenError", () => {
         retryable: true
       });
 
-      expect(shouldRetry(error, 1, 3)).toBe(true);
+      expect(shouldRetry(error, 1)).toBe(true);
     });
 
     it("should retry 5xx errors but not 4xx", () => {
@@ -169,8 +169,8 @@ describe("CodegenError", () => {
         retryable: false
       });
 
-      expect(shouldRetry(error5xx, 1, 3)).toBe(true);
-      expect(shouldRetry(error4xx, 1, 3)).toBe(false);
+      expect(shouldRetry(error5xx, 1)).toBe(true);
+      expect(shouldRetry(error4xx, 1)).toBe(false);
     });
   });
 });
