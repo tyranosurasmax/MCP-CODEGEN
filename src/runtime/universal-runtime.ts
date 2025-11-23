@@ -7,6 +7,7 @@
 
 import { MCPAdapter } from "../adapters/mcp-adapter";
 import { OpenAPIAdapter } from "../adapters/openapi-adapter";
+import { GraphQLAdapter } from "../adapters/graphql-adapter";
 import { CodegenError, toolNotFoundError, wrapError } from "./errors";
 import { emitRuntimeEvent, recordCallMetric } from "./instrumentation";
 import { retryWithBackoff, getRetryPolicy } from "./retry-policy";
@@ -15,7 +16,7 @@ import { retryWithBackoff, getRetryPolicy } from "./retry-policy";
  * Adapter registry
  * Maps source names to adapter instances
  */
-const adapterRegistry = new Map<string, MCPAdapter | OpenAPIAdapter>();
+const adapterRegistry = new Map<string, MCPAdapter | OpenAPIAdapter | GraphQLAdapter>();
 
 /**
  * Call options for runtime execution
@@ -40,7 +41,7 @@ export interface CallOptions {
  *
  * @internal Used by generated code
  */
-export function registerAdapter(name: string, adapter: MCPAdapter | OpenAPIAdapter): void {
+export function registerAdapter(name: string, adapter: MCPAdapter | OpenAPIAdapter | GraphQLAdapter): void {
   adapterRegistry.set(name, adapter);
 }
 
@@ -49,7 +50,7 @@ export function registerAdapter(name: string, adapter: MCPAdapter | OpenAPIAdapt
  *
  * @internal
  */
-export function getAdapter(name: string): MCPAdapter | OpenAPIAdapter | undefined {
+export function getAdapter(name: string): MCPAdapter | OpenAPIAdapter | GraphQLAdapter | undefined {
   return adapterRegistry.get(name);
 }
 
@@ -202,11 +203,11 @@ export async function discoverAll(): Promise<Map<string, any[]>> {
  * Get runtime instance (for advanced usage)
  */
 export class UniversalRuntime {
-  static registerAdapter(name: string, adapter: MCPAdapter | OpenAPIAdapter): void {
+  static registerAdapter(name: string, adapter: MCPAdapter | OpenAPIAdapter | GraphQLAdapter): void {
     registerAdapter(name, adapter);
   }
 
-  static getAdapters(): Map<string, MCPAdapter | OpenAPIAdapter> {
+  static getAdapters(): Map<string, MCPAdapter | OpenAPIAdapter | GraphQLAdapter> {
     return new Map(adapterRegistry);
   }
 

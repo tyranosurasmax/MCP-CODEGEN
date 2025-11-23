@@ -143,7 +143,7 @@ export class OpenAPIAdapter extends BaseAdapter {
         case 'bearer':
           config.headers!['Authorization'] = `Bearer ${this.resolveEnvVar(this.config.auth.token)}`;
           break;
-        case 'apikey':
+        case 'apiKey':
           if (this.config.auth.in === 'header') {
             config.headers![this.config.auth.name] = this.resolveEnvVar(this.config.auth.value);
           }

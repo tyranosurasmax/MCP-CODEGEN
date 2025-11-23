@@ -10,6 +10,7 @@ import { WrapperGenerator } from './codegen/wrapper-generator';
 import { UniversalRuntime } from './runtime/universal-runtime';
 import { MCPAdapter } from './adapters/mcp-adapter';
 import { OpenAPIAdapter } from './adapters/openapi-adapter';
+import { GraphQLAdapter } from './adapters/graphql-adapter';
 import {
   UniversalConfig,
   GenerationResult,
@@ -140,8 +141,8 @@ export class UniversalOrchestrator {
   /**
    * Create adapters from config
    */
-  private async createAdapters(config: UniversalConfig): Promise<Array<MCPAdapter | OpenAPIAdapter>> {
-    const adapters: Array<MCPAdapter | OpenAPIAdapter> = [];
+  private async createAdapters(config: UniversalConfig): Promise<Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>> {
+    const adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter> = [];
 
     // Create MCP adapters
     if (config.sources.mcp) {
@@ -161,13 +162,22 @@ export class UniversalOrchestrator {
       }
     }
 
+    // Create GraphQL adapters
+    if (config.sources.graphql) {
+      for (const [name, graphqlConfig] of Object.entries(config.sources.graphql)) {
+        if (!graphqlConfig.disabled) {
+          adapters.push(new GraphQLAdapter(name, graphqlConfig));
+        }
+      }
+    }
+
     return adapters;
   }
 
   /**
    * Generate wrappers for a source
    */
-  private async generateWrappersForSource(adapter: MCPAdapter | OpenAPIAdapter): Promise<GeneratedWrapper[]> {
+  private async generateWrappersForSource(adapter: MCPAdapter | OpenAPIAdapter | GraphQLAdapter): Promise<GeneratedWrapper[]> {
     const wrappers: GeneratedWrapper[] = [];
 
     try {
@@ -251,12 +261,13 @@ export {
    * Generate .agent-ready.json manifest
    */
   private generateManifest(
-    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
     wrappers: GeneratedWrapper[],
     benchmark: BenchmarkData
   ): AgentReadyManifest {
     const mcpSources: string[] = [];
     const openapiSources: string[] = [];
+    const graphqlSources: string[] = [];
     const toolsBySource: Record<string, number> = {};
 
     for (const adapter of adapters) {
@@ -264,6 +275,8 @@ export {
         mcpSources.push(adapter.name);
       } else if (adapter.type === 'openapi') {
         openapiSources.push(adapter.name);
+      } else if (adapter.type === 'graphql') {
+        graphqlSources.push(adapter.name);
       }
 
       const sourceWrappers = wrappers.filter(w => w.serverName === adapter.name);
@@ -273,6 +286,7 @@ export {
     const capabilities = ['type-safety'];
     if (mcpSources.length > 0) capabilities.push('mcp-servers');
     if (openapiSources.length > 0) capabilities.push('rest-apis');
+    if (graphqlSources.length > 0) capabilities.push('graphql-apis');
     capabilities.push('connection-pooling');
 
     const manifest: AgentReadyManifest = {
@@ -283,6 +297,7 @@ export {
       sources: {
         ...(mcpSources.length > 0 && { mcp: mcpSources }),
         ...(openapiSources.length > 0 && { openapi: openapiSources }),
+        ...(graphqlSources.length > 0 && { graphql: graphqlSources }),
         total: adapters.length,
       },
       tools: {
@@ -316,7 +331,7 @@ export {
    * Generate example.ts demonstrating the Anthropic pattern
    */
   private generateExampleFile(
-    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
     wrappers: GeneratedWrapper[]
   ): void {
     const mcpTools = wrappers.filter(w =>
@@ -408,7 +423,7 @@ example()
    * Generate benchmark data
    */
   private async generateBenchmark(
-    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
     wrappers: GeneratedWrapper[]
   ): Promise<BenchmarkData> {
     // Estimate tokens for raw specs (what traditional approach sends in every prompt)
@@ -465,7 +480,7 @@ example()
    * (excludes tokenReduction to avoid circular dependency)
    */
   private buildMinimalManifest(
-    adapters: Array<MCPAdapter | OpenAPIAdapter>,
+    adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
     wrappers: GeneratedWrapper[]
   ): Partial<AgentReadyManifest> {
     const sources: { mcp?: string[]; openapi?: string[]; total: number } = { total: 0 };
