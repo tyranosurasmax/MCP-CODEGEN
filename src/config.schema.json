@@ -1,0 +1,336 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mcp-codegen.dev/schemas/config.json",
+  "title": "MCP-CODEGEN Configuration",
+  "description": "Configuration schema for mcp-codegen universal code generation",
+  "type": "object",
+  "properties": {
+    "sources": {
+      "type": "object",
+      "description": "API sources to generate wrappers for",
+      "properties": {
+        "mcp": {
+          "type": "object",
+          "description": "MCP server configurations",
+          "additionalProperties": {
+            "$ref": "#/definitions/MCPServerConfig"
+          }
+        },
+        "openapi": {
+          "type": "object",
+          "description": "OpenAPI/REST API configurations",
+          "additionalProperties": {
+            "$ref": "#/definitions/OpenAPIConfig"
+          }
+        },
+        "graphql": {
+          "type": "object",
+          "description": "GraphQL API configurations (planned v1.2)",
+          "additionalProperties": {
+            "$ref": "#/definitions/GraphQLConfig"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputDir": {
+      "type": "string",
+      "description": "Output directory for generated code",
+      "default": "./codegen"
+    },
+    "runtimePackage": {
+      "type": "string",
+      "description": "Path to runtime package import",
+      "default": "codegen/runtime"
+    },
+    "typescript": {
+      "type": "object",
+      "description": "TypeScript generation options",
+      "properties": {
+        "strict": {
+          "type": "boolean",
+          "description": "Enable strict type checking",
+          "default": true
+        },
+        "esModuleInterop": {
+          "type": "boolean",
+          "description": "Enable ES module interop",
+          "default": true
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "description": "Code generation options",
+      "properties": {
+        "includeComments": {
+          "type": "boolean",
+          "description": "Include LLM-friendly comments in generated code",
+          "default": true
+        },
+        "includeExamples": {
+          "type": "boolean",
+          "description": "Include usage examples in generated code",
+          "default": true
+        },
+        "hashBasedRegeneration": {
+          "type": "boolean",
+          "description": "Only regenerate files if schema changed",
+          "default": true
+        }
+      }
+    }
+  },
+  "required": ["sources"],
+  "definitions": {
+    "MCPServerConfig": {
+      "type": "object",
+      "description": "MCP server configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "mcp",
+          "description": "Source type identifier"
+        },
+        "command": {
+          "type": "string",
+          "description": "Command to execute MCP server",
+          "examples": ["npx", "node", "python"]
+        },
+        "args": {
+          "type": "array",
+          "description": "Arguments for MCP server command",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env": {
+          "type": "object",
+          "description": "Environment variables for MCP server",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Discovery timeout in milliseconds",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 300000
+        }
+      },
+      "required": ["type", "command", "args"],
+      "additionalProperties": false
+    },
+    "OpenAPIConfig": {
+      "type": "object",
+      "description": "OpenAPI/REST API configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "openapi",
+          "description": "Source type identifier"
+        },
+        "spec": {
+          "type": "string",
+          "description": "URL or file path to OpenAPI specification",
+          "examples": [
+            "https://api.github.com/openapi.json",
+            "./specs/api.yaml"
+          ]
+        },
+        "baseUrl": {
+          "type": "string",
+          "description": "Base URL for API requests",
+          "format": "uri",
+          "examples": ["https://api.github.com"]
+        },
+        "auth": {
+          "$ref": "#/definitions/AuthConfig",
+          "description": "Authentication configuration"
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Request timeout in milliseconds",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 300000
+        },
+        "headers": {
+          "type": "object",
+          "description": "Default headers for all requests",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["type", "spec", "baseUrl"],
+      "additionalProperties": false
+    },
+    "GraphQLConfig": {
+      "type": "object",
+      "description": "GraphQL API configuration (planned v1.2)",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "graphql"
+        },
+        "endpoint": {
+          "type": "string",
+          "format": "uri"
+        },
+        "auth": {
+          "$ref": "#/definitions/AuthConfig"
+        }
+      },
+      "required": ["type", "endpoint"],
+      "additionalProperties": false
+    },
+    "AuthConfig": {
+      "type": "object",
+      "description": "Authentication configuration",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/BearerAuth"
+        },
+        {
+          "$ref": "#/definitions/ApiKeyAuth"
+        },
+        {
+          "$ref": "#/definitions/BasicAuth"
+        },
+        {
+          "$ref": "#/definitions/OAuth2Auth"
+        },
+        {
+          "$ref": "#/definitions/CustomAuth"
+        }
+      ]
+    },
+    "BearerAuth": {
+      "type": "object",
+      "description": "Bearer token authentication",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "bearer"
+        },
+        "token": {
+          "type": "string",
+          "description": "Bearer token (supports ${ENV_VAR} substitution)",
+          "examples": ["${GITHUB_TOKEN}", "${API_TOKEN}"]
+        }
+      },
+      "required": ["type", "token"],
+      "additionalProperties": false
+    },
+    "ApiKeyAuth": {
+      "type": "object",
+      "description": "API key authentication",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "apiKey"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the API key parameter",
+          "examples": ["X-API-Key", "api_key"]
+        },
+        "in": {
+          "type": "string",
+          "enum": ["header", "query", "cookie"],
+          "description": "Where to place the API key"
+        },
+        "value": {
+          "type": "string",
+          "description": "API key value (supports ${ENV_VAR} substitution)"
+        }
+      },
+      "required": ["type", "name", "in", "value"],
+      "additionalProperties": false
+    },
+    "BasicAuth": {
+      "type": "object",
+      "description": "Basic authentication",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "basic"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username (supports ${ENV_VAR} substitution)"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password (supports ${ENV_VAR} substitution)"
+        }
+      },
+      "required": ["type", "username", "password"],
+      "additionalProperties": false
+    },
+    "OAuth2Auth": {
+      "type": "object",
+      "description": "OAuth2 authentication",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "oauth2"
+        },
+        "flow": {
+          "type": "string",
+          "enum": ["clientCredentials", "authorizationCode", "implicit", "password"],
+          "description": "OAuth2 flow type"
+        },
+        "tokenUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Token endpoint URL"
+        },
+        "authUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Authorization endpoint URL (for authorizationCode flow)"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "OAuth2 client ID (supports ${ENV_VAR} substitution)"
+        },
+        "clientSecret": {
+          "type": "string",
+          "description": "OAuth2 client secret (supports ${ENV_VAR} substitution)"
+        },
+        "scopes": {
+          "type": "array",
+          "description": "OAuth2 scopes",
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "Refresh token for token refresh"
+        }
+      },
+      "required": ["type", "flow", "clientId"],
+      "additionalProperties": false
+    },
+    "CustomAuth": {
+      "type": "object",
+      "description": "Custom authentication resolver",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "custom"
+        },
+        "resolver": {
+          "type": "string",
+          "description": "Name of registered custom auth resolver"
+        }
+      },
+      "required": ["type", "resolver"],
+      "additionalProperties": false
+    }
+  }
+}
