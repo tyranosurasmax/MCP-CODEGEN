@@ -33,7 +33,7 @@ export interface OpenAPIConfig {
 
 export type OpenAPIAuth =
   | { type: 'bearer'; token: string }
-  | { type: 'apikey'; name: string; in: 'header' | 'query'; value: string }
+  | { type: 'apiKey'; name: string; in: 'header' | 'query'; value: string }
   | { type: 'basic'; username: string; password: string }
   | { type: 'oauth2'; token: string };
 
@@ -57,16 +57,36 @@ export interface OpenAPISpec {
 }
 
 // ============================================================================
+// GraphQL Types
+// ============================================================================
+
+export interface GraphQLConfig {
+  type: 'graphql';
+  endpoint: string; // GraphQL endpoint URL
+  auth?: GraphQLAuth;
+  headers?: Record<string, string>;
+  timeout?: number;
+  disabled?: boolean;
+}
+
+export type GraphQLAuth =
+  | { type: 'bearer'; token: string }
+  | { type: 'apiKey'; name: string; in: 'header' | 'query'; value: string }
+  | { type: 'basic'; username: string; password: string }
+  | { type: 'oauth2'; token: string };
+
+// ============================================================================
 // Universal Types
 // ============================================================================
 
-export type SourceConfig = MCPServerConfig | OpenAPIConfig;
+export type SourceConfig = MCPServerConfig | OpenAPIConfig | GraphQLConfig;
 
 export interface UniversalConfig {
   sources: {
     mcp?: { [name: string]: MCPServerConfig };
     openapi?: { [name: string]: OpenAPIConfig };
-    // Future: graphql, database, etc.
+    graphql?: { [name: string]: GraphQLConfig };
+    // Future: database, grpc, etc.
   };
   outputDir?: string;
   runtimePackage?: string;
@@ -111,6 +131,7 @@ export interface AgentReadyManifest {
   sources: {
     mcp?: string[];
     openapi?: string[];
+    graphql?: string[];
     total: number;
   };
   tools: {
