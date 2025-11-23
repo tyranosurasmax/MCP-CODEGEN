@@ -129,7 +129,7 @@ export async function call(
     // Wrap error if needed
     const codegenError = error instanceof CodegenError
       ? error
-      : wrapError(error, \`Failed to execute \${toolName}\`);
+      : wrapError(error, `Failed to execute ${toolName}`);
 
     // Record failure metrics
     if (!options?.skipInstrumentation) {
@@ -190,7 +190,7 @@ export async function discoverAll(): Promise<Map<string, any[]>> {
       const tools = await adapter.discover();
       results.set(name, tools);
     } catch (error) {
-      console.error(\`Failed to discover tools from \${name}:\`, error);
+      console.error(`Failed to discover tools from ${name}:`, error);
       results.set(name, []);
     }
   }
