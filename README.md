@@ -16,14 +16,20 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
 ## What is Universal Code Mode?
 
-Code Mode is the future of AI-API integration:
+Code Mode is the future of AI-API integration, building upon concepts introduced by Anthropic and Cloudflare:
 
 - **Traditional approach**: Send massive API specs to LLMs in every prompt (150K+ tokens)
 - **Code Mode**: Generate tiny TypeScript wrappers agents can import like regular functions
 
 **The Result:** 98% fewer tokens, better performance, cleaner code.
 
-**The Innovation:** Works with ANY API source—not just one protocol.
+**The Innovation:** This project extends Code Mode to work with ANY API source—not just one protocol.
+
+**Inspired by:**
+- [Anthropic's Code Mode](https://www.anthropic.com/news/model-context-protocol) - MCP server integration
+- [Cloudflare's Code Mode](https://blog.cloudflare.com/cloudflare-workers-code-mode) - V8 isolate approach
+
+**Our Contribution:** Universal adapter pattern that works with MCP, REST, GraphQL, databases, and any future API type.
 
 ---
 
@@ -402,13 +408,32 @@ across all API types, not just MCP servers.
 
 ## Acknowledgments
 
-Inspired by:
-- **Anthropic's Code Mode** - Original MCP concept
-- **Cloudflare's Code Mode** - V8 isolate approach
+This project builds upon groundbreaking work by:
+
+**Anthropic's Code Mode & MCP**
+- Introduced the Model Context Protocol and Code Mode concept
+- Demonstrated token reduction benefits for LLM-tool integration
+- [Read the MCP announcement](https://www.anthropic.com/news/model-context-protocol)
+- [MCP Specification](https://spec.modelcontextprotocol.io/)
+
+**Cloudflare's Code Mode**
+- Pioneered Code Mode on Workers platform with V8 isolate security
+- Showed how code generation can replace verbose tool definitions
+- [Read the Code Mode article](https://blog.cloudflare.com/cloudflare-workers-code-mode)
+
+**Our Extension:**
+We took these pioneering ideas and made them **universal**:
+- Not limited to one protocol (MCP) or platform (Workers)
+- Works with REST, GraphQL, databases, and any future API type
+- Open source and platform-agnostic
+- Production-ready with enterprise-grade infrastructure
+
+**Additional Inspiration:**
 - **OpenAPI Generator** - REST API codegen patterns
 - **Prisma** - Database abstraction excellence
+- **The MCP Community** - Tool authors and early adopters
 
-We took these ideas and made them **universal**.
+**Standing on the shoulders of giants to build something universal.**
 
 ---
 
