@@ -95,6 +95,150 @@ interface SourceAdapter {
 
 Every source type implements this interface, ensuring consistency.
 
+### Runtime Infrastructure (v1.1+)
+
+The universal runtime provides enterprise-grade infrastructure:
+
+#### **Error Handling System** (`src/runtime/errors.ts`)
+
+Standardized error shapes for consistent handling:
+
+```typescript
+class CodegenError extends Error {
+  code: string;           // e.g., "TOOL_NOT_FOUND", "RATE_LIMITED"
+  category: ErrorCategory; // CONFIG, VALIDATION, TRANSPORT, etc.
+  retryable: boolean;     // Whether retry should be attempted
+  context?: object;       // Additional debug info
+}
+```
+
+**Error Categories:**
+- `CONFIG` - Configuration errors (not retryable)
+- `VALIDATION` - Invalid parameters (not retryable)
+- `TRANSPORT` - Network failures (retryable)
+- `TIMEOUT` - Request timeouts (retryable)
+- `AUTH` - Authentication failures (not retryable without refresh)
+- `RATE_LIMIT` - Rate limiting (retryable with delay)
+- `EXECUTION` - Tool execution failures (depends)
+- `CONNECTION` - Connection failures (retryable)
+- `INTERNAL` - Unexpected errors (not retryable)
+
+See `RUNTIME_CONTRACT.md` for complete error handling specification.
+
+#### **Authentication System** (`src/runtime/auth-resolver.ts`)
+
+Automatic authentication resolution with caching and refresh:
+
+```typescript
+interface AuthResolver {
+  resolve(context: AuthContext): Promise<AuthResult>;
+  refresh?(context: AuthContext): Promise<AuthResult>;
+}
+```
+
+**Supported Auth Types:**
+- Bearer tokens (with environment variable substitution)
+- API keys (header, query, or cookie)
+- Basic authentication
+- OAuth2 (client credentials, authorization code)
+- Custom resolvers (pluggable)
+
+**Features:**
+- Environment variable substitution: `${GITHUB_TOKEN}`
+- Token caching with expiration
+- Automatic refresh for OAuth2
+- Custom auth resolver registration
+
+#### **Retry Policy System** (`src/runtime/retry-policy.ts`)
+
+Exponential backoff with jitter for transient failures:
+
+```typescript
+interface RetryPolicy {
+  maxAttempts: number;         // Default: 3
+  initialDelay: number;        // Default: 1000ms
+  maxDelay: number;           // Default: 30000ms
+  backoffMultiplier: number;  // Default: 2 (exponential)
+  jitter: boolean;            // Default: true
+}
+```
+
+**Retry Logic:**
+- Automatic retry for network/transport errors
+- Exponential backoff with jitter (prevents thundering herd)
+- Rate limit aware (respects `Retry-After` header)
+- Configurable per-call or globally
+
+**Retry Presets:**
+- `NONE` - No retries
+- `CONSERVATIVE` - Few retries, long delays
+- `AGGRESSIVE` - Many retries, short delays
+- `NETWORK` - Optimized for network failures
+- `RATE_LIMIT` - Respects server rate limits
+
+#### **Schema Normalization** (`src/runtime/schema-normalizer.ts`)
+
+Handles inconsistent schemas from different sources:
+
+```typescript
+function normalizeSchema(schema: unknown): NormalizedSchema {
+  // Fixes:
+  // - Missing type fields (inferred from properties/items)
+  // - Inconsistent required arrays
+  // - Invalid additionalProperties
+  // - Nested schema issues
+}
+```
+
+**Features:**
+- Runtime parameter validation
+- Type coercion (string → number, etc.)
+- Composition schema support (anyOf, oneOf, allOf)
+- Helpful validation error messages
+
+**Why Critical:**
+- MCP schemas often missing `type: "object"`
+- OpenAPI specs have inconsistent property definitions
+- GraphQL introspection has different schema format
+- Prevents errors during generation and runtime
+
+#### **Instrumentation System** (`src/runtime/instrumentation.ts`)
+
+Observability for monitoring and debugging:
+
+```typescript
+// Event emission
+emitRuntimeEvent("call:start", { toolName, params });
+emitRuntimeEvent("call:success", { toolName, result, duration });
+emitRuntimeEvent("call:error", { toolName, error });
+
+// Event subscription
+onRuntimeEvent("call:error", (event) => {
+  console.error("Call failed:", event.data);
+});
+```
+
+**Available Events:**
+- `runtime:init` - Runtime initialized
+- `discovery:start/complete/error` - Tool discovery
+- `call:start/success/error/retry` - Tool execution
+- `auth:resolve/refresh/error` - Authentication
+- `connection:open/close/error` - Connection lifecycle
+- `transport:send/receive` - Transport operations
+
+**Features:**
+- Pluggable logger interface
+- Performance metrics per source
+- Log levels (DEBUG, INFO, WARN, ERROR, SILENT)
+- Custom event listeners
+- Telemetry integration support
+
+**Metrics Tracked:**
+- Total/successful/failed calls
+- Average/min/max duration
+- Retry counts
+- Success rates per source
+
 ### Current Adapters
 
 #### **MCPAdapter**
