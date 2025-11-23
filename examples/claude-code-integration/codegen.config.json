@@ -1,0 +1,23 @@
+{
+  "sources": {
+    "mcp": {
+      "filesystem": {
+        "type": "mcp",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+      }
+    },
+    "openapi": {
+      "github": {
+        "type": "openapi",
+        "spec": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "baseUrl": "https://api.github.com",
+        "auth": {
+          "type": "bearer",
+          "token": "${GITHUB_TOKEN}"
+        }
+      }
+    }
+  },
+  "outputDir": "./codegen"
+}
