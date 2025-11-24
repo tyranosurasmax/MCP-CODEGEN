@@ -48,8 +48,12 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build-runtime-package:
+  build-packages:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        package: [runtime, cli]
 
     steps:
       - uses: actions/checkout@v4
@@ -60,16 +64,14 @@ jobs:
           node-version: 20.x
           cache: 'npm'
 
-      - name: Install runtime package dependencies
-        working-directory: ./runtime-package
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build runtime package
-        working-directory: ./runtime-package
-        run: npm run build
+      - name: Build ${{ matrix.package }} package
+        run: npm run build:${{ matrix.package }}
 
       - name: Check for build artifacts
-        working-directory: ./runtime-package
+        working-directory: ./packages/${{ matrix.package }}
         run: |
           if [ ! -d "dist" ]; then
             echo "Build failed: dist directory not found"
@@ -148,6 +150,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
+    strategy:
+      matrix:
+        package: [runtime, cli]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -160,11 +166,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check package can be published
-        run: npm pack --dry-run
+      - name: Build ${{ matrix.package }} package
+        run: npm run build:${{ matrix.package }}
 
-      - name: Check runtime package can be published
-        working-directory: ./runtime-package
-        run: |
-          npm install
-          npm pack --dry-run
+      - name: Check ${{ matrix.package }} package can be published
+        working-directory: ./packages/${{ matrix.package }}
+        run: npm pack --dry-run
