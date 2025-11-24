@@ -72,15 +72,37 @@ While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated
 
 ## Quick Start
 
+### Copy-Paste and Go 🚀
+
+**Want to see it working in 30 seconds?** Run the universal example:
+
 ```bash
-# Install
-npm install -g mcp-codegen
+git clone https://github.com/tyranosurasmax/MCP-CODEGEN
+cd MCP-CODEGEN/examples/universal-github
+npm install
+npx mcp-codegen sync
+npm run demo
+```
 
-# Initialize
-mcp-codegen quickstart
+**That's it!** The demo:
+- ✅ Calls GitHub REST API (1,100+ tools)
+- ✅ Calls MCP filesystem server
+- ✅ Shows universal `call()` interface
+- ✅ Proves 99.4% token reduction
 
-# Or create universal config (MCP + REST together)
-cat > codegen.config.json << 'EOF'
+If that works on your machine, everything else will work. See [`examples/universal-github/README.md`](examples/universal-github/README.md) for details.
+
+---
+
+### Manual Setup
+
+**Install globally:**
+```bash
+npm install -g @mcp-codegen/cli
+```
+
+**Create config:**
+```json
 {
   "sources": {
     "mcp": {
@@ -99,16 +121,16 @@ cat > codegen.config.json << 'EOF'
     }
   }
 }
-EOF
-
-# Generate (creates 1,100+ type-safe functions)
-mcp-codegen quickstart
 ```
 
-**Use both sources in one project:**
+**Generate wrappers:**
+```bash
+mcp-codegen sync
+```
 
+**Use in your code:**
 ```typescript
-import { call } from "./codegen/runtime";
+import { call } from "@mcp-codegen/runtime";
 
 // MCP: Read local file
 const data = await call("filesystem__read_file", {
@@ -116,7 +138,7 @@ const data = await call("filesystem__read_file", {
 });
 
 // REST: Fetch from GitHub
-const repos = await call("github__list_repos", {
+const repos = await call("github__repos_list_for_user", {
   path: { username: "anthropics" }
 });
 
