@@ -1,0 +1,14 @@
+# Generated code
+codegen/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+
+# Build output
+dist/
+*.log

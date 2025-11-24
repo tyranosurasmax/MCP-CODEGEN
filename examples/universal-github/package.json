@@ -1,0 +1,23 @@
+{
+  "name": "mcp-codegen-example-universal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Example: Universal Code Mode with MCP + GitHub REST API",
+  "type": "module",
+  "scripts": {
+    "demo": "tsx scripts/demo.ts",
+    "generate": "mcp-codegen sync",
+    "clean": "rm -rf codegen node_modules"
+  },
+  "dependencies": {
+    "@mcp-codegen/runtime": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
