@@ -1169,22 +1169,22 @@ onRuntimeEvent("call:error", ({ data }) => {
 ## Contract Guarantees Summary
 
 ### The runtime WILL:
-- ✅ Automatically discover tools on first use
-- ✅ Retry transient failures (network, timeout, 5xx)
-- ✅ Resolve authentication from config and environment
-- ✅ Manage connection pooling and lifecycle
-- ✅ Throw standardized `CodegenError` instances
-- ✅ Respect timeout limits (30s default)
-- ✅ Clean up resources on exit
-- ✅ Emit events for instrumentation
+-  Automatically discover tools on first use
+-  Retry transient failures (network, timeout, 5xx)
+-  Resolve authentication from config and environment
+-  Manage connection pooling and lifecycle
+-  Throw standardized `CodegenError` instances
+-  Respect timeout limits (30s default)
+-  Clean up resources on exit
+-  Emit events for instrumentation
 
 ### The runtime WILL NOT:
-- ❌ Validate tool names at compile time
-- ❌ Retry non-retryable errors (4xx, validation, auth)
-- ❌ Store or cache API responses (caching is caller's responsibility)
-- ❌ Modify parameters or results (pass-through semantics)
-- ❌ Guarantee specific execution order for parallel calls
-- ❌ Persist state across process restarts
+-  Validate tool names at compile time
+-  Retry non-retryable errors (4xx, validation, auth)
+-  Store or cache API responses (caching is caller's responsibility)
+-  Modify parameters or results (pass-through semantics)
+-  Guarantee specific execution order for parallel calls
+-  Persist state across process restarts
 
 ### Breaking Changes Policy
 

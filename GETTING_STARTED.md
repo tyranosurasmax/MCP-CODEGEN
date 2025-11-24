@@ -5,11 +5,11 @@ This guide will help you set up mcp-codegen on your machine and verify it works 
 ## What You'll Achieve
 
 By the end of this guide:
-- ✅ Install and build mcp-codegen from source
-- ✅ Generate 1,100+ type-safe API wrappers
-- ✅ Achieve 99.93% token reduction
-- ✅ Integrate with Claude Code on your machine
-- ✅ Verify everything works end-to-end
+-  Install and build mcp-codegen from source
+-  Generate 1,100+ type-safe API wrappers
+-  Achieve 99.93% token reduction
+-  Integrate with Claude Code on your machine
+-  Verify everything works end-to-end
 
 ## Time Required
 
@@ -36,7 +36,7 @@ npm run build
 **Expected output:**
 ```
 ╔═══════════════════════════════════════════════════╗
-║   ✓ ALL TESTS PASSED                            ║
+║    ALL TESTS PASSED                            ║
 ╚═══════════════════════════════════════════════════╝
 ```
 
@@ -234,10 +234,10 @@ Use this to verify everything works:
 
 ## Next Steps
 
-1. ✅ **You're done!** The basics are working.
+1.  **You're done!** The basics are working.
 2. 📖 Read `SETUP.md` for detailed usage
 3. 🧪 Read `TESTING.md` for comprehensive testing
-4. 📝 Check `examples/claude-code-integration/` for practical examples
+4.  Check `examples/claude-code-integration/` for practical examples
 5. 🏗️ Read `ARCHITECTURE.md` to understand the design
 6. ➕ Add your own APIs to `codegen.config.json`
 
@@ -342,13 +342,13 @@ MCP-CODEGEN approach:
 ## Ready to Ship
 
 This project is production-ready:
-- ✅ MCP adapter: 93.5% reduction (tested)
-- ✅ REST adapter: 99.94% reduction (tested)
-- ✅ Universal runtime: 94.3% reduction (tested)
-- ✅ Type-safe wrappers
-- ✅ Connection pooling
-- ✅ Automatic retries
-- ✅ Timeout management
-- ✅ Hash-based regeneration
+-  MCP adapter: 93.5% reduction (tested)
+-  REST adapter: 99.94% reduction (tested)
+-  Universal runtime: 94.3% reduction (tested)
+-  Type-safe wrappers
+-  Connection pooling
+-  Automatic retries
+-  Timeout management
+-  Hash-based regeneration
 
 **Go ahead and use it with Claude Code. It just works.**

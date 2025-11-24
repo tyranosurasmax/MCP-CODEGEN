@@ -51,7 +51,7 @@ async function analyzeGitHubOrganization(orgName: string) {
       content: JSON.stringify(report, null, 2)
     });
 
-    console.log(`\n✓ Report saved to /tmp/${orgName}-analysis.json`);
+    console.log(`\n Report saved to /tmp/${orgName}-analysis.json`);
     console.log(`\nSummary:`);
     console.log(`- Total stars: ${report.summary.totalStars}`);
     console.log(`- Total forks: ${report.summary.totalForks}`);
@@ -62,7 +62,7 @@ async function analyzeGitHubOrganization(orgName: string) {
       path: `/tmp/${orgName}-analysis.json`
     });
 
-    console.log(`\n✓ Verified: Report successfully saved and readable`);
+    console.log(`\n Verified: Report successfully saved and readable`);
 
     return report;
 
@@ -84,10 +84,10 @@ async function main() {
 
   console.log("This demonstrates what Claude Code can do with");
   console.log("mcp-codegen's Universal Code Mode:\n");
-  console.log("✓ Access 1,100+ API endpoints");
-  console.log("✓ Type-safe function calls");
-  console.log("✓ Mix MCP + REST in same script");
-  console.log("✓ 99.93% token reduction\n");
+  console.log(" Access 1,100+ API endpoints");
+  console.log(" Type-safe function calls");
+  console.log(" Mix MCP + REST in same script");
+  console.log(" 99.93% token reduction\n");
 
   console.log("═══════════════════════════════════════════════════\n");
 

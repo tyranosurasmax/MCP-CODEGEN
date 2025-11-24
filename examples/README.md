@@ -2,7 +2,7 @@
 
 Complete, runnable examples demonstrating MCP-CODEGEN in action.
 
-## 📚 Available Examples
+##  Available Examples
 
 ### [universal-github](./universal-github/) - **START HERE**
 
@@ -16,13 +16,13 @@ npm run demo
 ```
 
 **What it demonstrates:**
-- ✅ MCP server integration (filesystem)
-- ✅ REST API integration (GitHub - 1,100+ tools)
-- ✅ Universal `call()` interface
-- ✅ 99.4% token reduction
-- ✅ TypeScript type safety
-- ✅ Error handling
-- ✅ Authentication (optional GitHub token)
+-  MCP server integration (filesystem)
+-  REST API integration (GitHub - 1,100+ tools)
+-  Universal `call()` interface
+-  99.4% token reduction
+-  TypeScript type safety
+-  Error handling
+-  Authentication (optional GitHub token)
 
 **If this works, you understand the entire system.**
 

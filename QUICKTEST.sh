@@ -15,14 +15,14 @@ if [ "$node_version" -lt 18 ]; then
   echo "✗ Node.js version must be 18 or higher (found: $(node --version))"
   exit 1
 fi
-echo "✓ Node.js $(node --version)"
+echo " Node.js $(node --version)"
 echo ""
 
 # Build
 echo "→ Building project..."
 npm run build > /dev/null 2>&1
 if [ -f "dist/cli.js" ]; then
-  echo "✓ Build successful"
+  echo " Build successful"
 else
   echo "✗ Build failed - dist/cli.js not found"
   exit 1
@@ -32,7 +32,7 @@ echo ""
 # Clean previous run
 echo "→ Cleaning previous generated files..."
 rm -rf .agent-ready.json codegen/ > /dev/null 2>&1
-echo "✓ Cleaned"
+echo " Cleaned"
 echo ""
 
 # Run quickstart
@@ -41,7 +41,7 @@ output=$(node dist/cli.js quickstart 2>&1)
 
 # Check for success indicators
 if echo "$output" | grep -q "CODE MODE ACTIVATED"; then
-  echo "✓ Quickstart completed"
+  echo " Quickstart completed"
 else
   echo "✗ Quickstart failed"
   echo "$output"
@@ -56,25 +56,25 @@ if [ ! -f ".agent-ready.json" ]; then
   echo "✗ Missing .agent-ready.json"
   exit 1
 fi
-echo "  ✓ .agent-ready.json"
+echo "   .agent-ready.json"
 
 if [ ! -f "codegen/runtime/index.ts" ]; then
   echo "✗ Missing codegen/runtime/index.ts"
   exit 1
 fi
-echo "  ✓ Runtime"
+echo "   Runtime"
 
 if [ ! -d "codegen/mcp/filesystem" ]; then
   echo "✗ Missing MCP wrappers"
   exit 1
 fi
-echo "  ✓ MCP wrappers"
+echo "   MCP wrappers"
 
 if [ ! -d "codegen/openapi/demoapi" ]; then
   echo "✗ Missing REST wrappers"
   exit 1
 fi
-echo "  ✓ REST wrappers"
+echo "   REST wrappers"
 
 echo ""
 
@@ -88,7 +88,7 @@ echo "  Tools generated: $tools"
 
 echo ""
 echo "╔═══════════════════════════════════════════════════╗"
-echo "║   ✓ ALL TESTS PASSED                            ║"
+echo "║    ALL TESTS PASSED                            ║"
 echo "╚═══════════════════════════════════════════════════╝"
 echo ""
 echo "Next steps:"

@@ -6,18 +6,18 @@ The project's core functionality is **WORKING** with token reduction calculation
 
 ## What Works
 
-### ✅ Token Reduction (FIXED)
+###  Token Reduction (FIXED)
 - Demo API: 80.2% reduction (601 → 119 tokens)
 - GitHub API: 99.94% reduction (205,658 → 120 tokens)
 - Calculation correctly compares raw specs vs manifest size
 
-### ✅ REST/OpenAPI Adapter (PRODUCTION READY)
+###  REST/OpenAPI Adapter (PRODUCTION READY)
 - Generates type-safe TypeScript wrappers
 - Tested with multiple APIs (2-1,108 tools)
 - Proper parameter validation
 - User-editable sections preserved
 
-### ✅ Code Quality
+###  Code Quality
 - No emojis in committed code
 - No competitive language
 - No future roadmaps or "planned" features
@@ -25,7 +25,7 @@ The project's core functionality is **WORKING** with token reduction calculation
 
 ## Known Issues
 
-### ❌ MCP Filesystem Adapter
+###  MCP Filesystem Adapter
 **Problem**: MCP SDK validates schemas before we can normalize them
 
 **Error**:

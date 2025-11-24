@@ -39,7 +39,7 @@ program
         `Generated ${result.manifest.tools.total} tools from ${result.manifest.sources.total} sources`
       );
 
-      console.log(chalk.green('\n✓ Success!'));
+      console.log(chalk.green('\n Success!'));
       console.log(chalk.dim(`  Manifest: .agent-ready.json`));
 
       // Show sources
@@ -54,7 +54,7 @@ program
       }
 
       console.log(
-        chalk.yellow(`\n📊 Token reduction: ${result.benchmark.reductionPercentage}%`)
+        chalk.yellow(`\n Token reduction: ${result.benchmark.reductionPercentage}%`)
       );
       console.log(
         chalk.dim(
@@ -78,7 +78,7 @@ program
     const configPath = './codegen.config.json';
 
     if (fs.existsSync(configPath)) {
-      console.log(chalk.yellow('⚠️  codegen.config.json already exists'));
+      console.log(chalk.yellow('  codegen.config.json already exists'));
       return;
     }
 
@@ -97,7 +97,7 @@ program
     };
 
     fs.writeFileSync(configPath, JSON.stringify(sampleConfig, null, 2));
-    console.log(chalk.green('✓ Created codegen.config.json'));
+    console.log(chalk.green(' Created codegen.config.json'));
     console.log(chalk.dim('\nNext steps:'));
     console.log(chalk.dim('  1. Edit codegen.config.json to add your sources'));
     console.log(chalk.dim('  2. Run: mcp-codegen sync'));

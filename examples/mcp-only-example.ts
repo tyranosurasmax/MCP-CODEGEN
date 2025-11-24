@@ -6,7 +6,7 @@
 import { call } from '../codegen/runtime';
 
 async function main() {
-  console.log('🔧 MCP Code Mode Example\n');
+  console.log(' MCP Code Mode Example\n');
 
   // Read a file
   const content = await call('filesystem__read_file', {

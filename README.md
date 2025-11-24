@@ -30,11 +30,11 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
 
 **We made it universal:**
-- ✅ Works with **multiple API types** - MCP and REST APIs (v1), with GraphQL planned
-- ✅ **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
-- ✅ **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
-- ✅ **Open source** - Apache 2.0 licensed, extensible architecture
-- ✅ **Proven at scale** - 1,100+ tools from GitHub API with 99.94% reduction
+-  Works with **multiple API types** - MCP and REST APIs (v1), with GraphQL planned
+-  **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
+-  **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
+-  **Open source** - Apache 2.0 licensed, extensible architecture
+-  **Proven at scale** - 1,100+ tools from GitHub API with 99.94% reduction
 
 **Key innovations:**
 - Universal adapter pattern for multi-source integration
@@ -57,14 +57,14 @@ While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated
 ### Implemented (v1)
 | Source Type | Status | Use Case |
 |-------------|--------|----------|
-| **MCP Servers** | ✅ Production | Claude Desktop tools, local services |
-| **REST APIs** | ✅ Production | GitHub, Stripe, any OpenAPI spec |
+| **MCP Servers** |  Production | Claude Desktop tools, local services |
+| **REST APIs** |  Production | GitHub, Stripe, any OpenAPI spec |
 
 ### Planned (Future Releases)
 | Source Type | Status | Use Case |
 |-------------|--------|----------|
-| **GraphQL APIs** | ⏳ Planned | GitHub GraphQL, Shopify, Hasura |
-| **Databases** | ⏳ Planned | Prisma-style introspection |
+| **GraphQL APIs** |  Planned | GitHub GraphQL, Shopify, Hasura |
+| **Databases** |  Planned | Prisma-style introspection |
 
 **v1 Scope:** MCP + OpenAPI REST. Both adapters are production-ready and fully functional.
 
@@ -72,7 +72,7 @@ While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated
 
 ## Quick Start
 
-### Copy-Paste and Go 🚀
+### Copy-Paste and Go 
 
 **Want to see it working in 30 seconds?** Run the universal example:
 
@@ -85,10 +85,10 @@ npm run demo
 ```
 
 **That's it!** The demo:
-- ✅ Calls GitHub REST API (1,100+ tools)
-- ✅ Calls MCP filesystem server
-- ✅ Shows universal `call()` interface
-- ✅ Proves 99.4% token reduction
+-  Calls GitHub REST API (1,100+ tools)
+-  Calls MCP filesystem server
+-  Shows universal `call()` interface
+-  Proves 99.4% token reduction
 
 If that works on your machine, everything else will work. See [`examples/universal-github/README.md`](examples/universal-github/README.md) for details.
 
@@ -178,9 +178,9 @@ The key innovation: Instead of sending a 150K token API specification in every p
 
 ### The Problem
 Every API type has massive specifications:
-- **MCP**: Tool definitions (152K tokens) ✅ v1
-- **OpenAPI**: REST specs (200K+ tokens) ✅ v1
-- **GraphQL**: Schema introspection (100K+ tokens) ⏳ Planned
+- **MCP**: Tool definitions (152K tokens)  v1
+- **OpenAPI**: REST specs (200K+ tokens)  v1
+- **GraphQL**: Schema introspection (100K+ tokens)  Planned
 
 ### The Solution
 Convert them all to tiny TypeScript wrappers:
@@ -372,24 +372,24 @@ mcp-codegen quickstart
 
 ### vs. Anthropic's MCP Code Mode
 **Improvements:**
-- ✅ Universal (MCP + REST in v1, GraphQL planned) vs. MCP-only
-- ✅ Production infrastructure (retries, auth, instrumentation)
-- ✅ Open source and extensible
-- ✅ Same 98%+ token reduction
-- ✅ Works with existing MCP servers
+-  Universal (MCP + REST in v1, GraphQL planned) vs. MCP-only
+-  Production infrastructure (retries, auth, instrumentation)
+-  Open source and extensible
+-  Same 98%+ token reduction
+-  Works with existing MCP servers
 
 **Trade-offs:**
-- ⚠️ No built-in sandboxing (run in trusted environments)
+-  No built-in sandboxing (run in trusted environments)
 
 ### vs. Cloudflare's Code Mode
 **Improvements:**
-- ✅ Platform-agnostic (runs anywhere) vs. Workers-only
-- ✅ More source types (MCP + REST in v1, more planned)
-- ✅ Enterprise features (auth, retries, monitoring)
-- ✅ Open source with Apache 2.0 license
+-  Platform-agnostic (runs anywhere) vs. Workers-only
+-  More source types (MCP + REST in v1, more planned)
+-  Enterprise features (auth, retries, monitoring)
+-  Open source with Apache 2.0 license
 
 **Trade-offs:**
-- ⚠️ No V8 isolate sandboxing (different security model)
+-  No V8 isolate sandboxing (different security model)
 
 ### vs. OpenAPI Generator
 - LLM-optimized (98% token reduction)

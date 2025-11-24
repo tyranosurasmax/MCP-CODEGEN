@@ -263,12 +263,12 @@ node dist/cli.js quickstart 2>&1 | grep -i error
 
 You've successfully verified mcp-codegen if:
 
-✅ Build completes without errors
-✅ Quickstart generates files
-✅ `.agent-ready.json` shows correct token reduction
-✅ Generated wrappers have proper TypeScript types
-✅ Claude Code can discover and use the wrappers
-✅ Runtime can execute tool calls
+ Build completes without errors
+ Quickstart generates files
+ `.agent-ready.json` shows correct token reduction
+ Generated wrappers have proper TypeScript types
+ Claude Code can discover and use the wrappers
+ Runtime can execute tool calls
 
 ## Performance Benchmarks
 

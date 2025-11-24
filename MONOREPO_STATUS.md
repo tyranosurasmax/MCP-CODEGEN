@@ -1,6 +1,6 @@
 # Monorepo Refactoring Status
 
-## ✅ Completed
+##  Completed
 
 ### Package Structure
 - Created `packages/cli/` with @mcp-codegen/cli package
@@ -9,18 +9,18 @@
 - Copied source files to appropriate packages
 
 ### Runtime Package (@mcp-codegen/runtime)
-- ✅ Builds successfully
-- ✅ Exports universal runtime functions: `call`, `callTyped`, `registerAdapter`, `getAdapter`
-- ✅ Created `SourceAdapter` interface for adapter abstraction
-- ✅ Exports all error types, auth resolver, instrumentation, retry policy
-- ✅ No dependencies on CLI code
+-  Builds successfully
+-  Exports universal runtime functions: `call`, `callTyped`, `registerAdapter`, `getAdapter`
+-  Created `SourceAdapter` interface for adapter abstraction
+-  Exports all error types, auth resolver, instrumentation, retry policy
+-  No dependencies on CLI code
 
 ### Build Scripts
-- ✅ Root package.json has workspace build scripts
-- ✅ `npm run build:runtime` works
-- ✅ `npm run build:cli` - needs fixes (see below)
+-  Root package.json has workspace build scripts
+-  `npm run build:runtime` works
+-  `npm run build:cli` - needs fixes (see below)
 
-## ⏳ In Progress / Needs Completion
+##  In Progress / Needs Completion
 
 ### CLI Package (@mcp-codegen/cli)
 **Status:** TypeScript errors preventing build
@@ -86,8 +86,8 @@
 │   │   │   ├── codegen/        (wrapper generator, schema converter)
 │   │   │   ├── discovery/      (source discovery)
 │   │   │   ├── types/          (TypeScript types)
-│   │   │   ├── cli.ts          (CLI entry point) ⚠️ needs fix
-│   │   │   ├── index.ts        (programmatic API) ⚠️ needs fix
+│   │   │   ├── cli.ts          (CLI entry point)  needs fix
+│   │   │   ├── index.ts        (programmatic API)  needs fix
 │   │   │   └── orchestrator-universal.ts (universal orchestrator)
 │   │   ├── tests/
 │   │   ├── package.json        (@mcp-codegen/cli)
@@ -102,11 +102,11 @@
 │       │   ├── instrumentation.ts  (metrics, logging)
 │       │   ├── retry-policy.ts     (retry logic)
 │       │   ├── schema-normalizer.ts (schema utilities)
-│       │   └── index.ts            (public exports) ✅
-│       ├── package.json            (@mcp-codegen/runtime) ✅
+│       │   └── index.ts            (public exports) 
+│       ├── package.json            (@mcp-codegen/runtime) 
 │       └── tsconfig.json
 │
-├── package.json (workspace root) ✅
+├── package.json (workspace root) 
 └── MONOREPO_STATUS.md (this file)
 ```
 
@@ -137,18 +137,18 @@
 
 ## Benefits of Monorepo Structure
 
-✅ **Clear Separation of Concerns**
+ **Clear Separation of Concerns**
 - CLI: Code generation, discovery, adapters
 - Runtime: Tool execution, error handling, instrumentation
 
-✅ **Independent Versioning**
+ **Independent Versioning**
 - Can version CLI and runtime separately
 - Runtime is stable, CLI can evolve
 
-✅ **Better Developer Experience**
+ **Better Developer Experience**
 - `npm install -g @mcp-codegen/cli` - get the CLI
 - Generated code imports `@mcp-codegen/runtime` - explicit dependency
 
-✅ **Reduced Bundle Size**
+ **Reduced Bundle Size**
 - Generated projects only need runtime package
 - Don't need CLI dependencies at runtime
