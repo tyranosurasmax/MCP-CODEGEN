@@ -8,7 +8,6 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { Orchestrator } from './orchestrator';
 import { UniversalOrchestrator } from './orchestrator-universal';
 import { ServerDiscovery } from './discovery';
 import * as fs from 'fs';
@@ -22,33 +21,38 @@ program
   .version('1.1.0');
 
 /**
- * Sync command: discover and generate all wrappers
+ * Sync command: discover and generate all wrappers (universal)
  */
 program
   .command('sync')
-  .description('Discover MCP servers and generate TypeScript wrappers')
-  .option('-s, --server <path>', 'Path to specific server config file')
-  .option('-f, --filter <name>', 'Filter servers by name')
-  .option('-o, --output <dir>', 'Output directory (default: ./mcp)')
+  .description('Discover all sources and generate TypeScript wrappers')
+  .option('-c, --config <path>', 'Path to config file (default: ./codegen.config.json)')
+  .option('-o, --output <dir>', 'Output directory override')
   .action(async (options) => {
-    const spinner = ora('Discovering MCP servers...').start();
+    const spinner = ora('Generating universal wrappers...').start();
 
     try {
-      const orchestrator = new Orchestrator({
-        outputDir: options.output,
-        configFile: options.server,
-      });
-
-      const result = await orchestrator.sync(options.filter);
+      const orchestrator = new UniversalOrchestrator();
+      const result = await orchestrator.sync(options.config || './codegen.config.json');
 
       spinner.succeed(
-        `Generated ${result.wrappers.length} wrappers for ${Object.keys(result.serverMap).length} servers`
+        `Generated ${result.manifest.tools.total} tools from ${result.manifest.sources.total} sources`
       );
 
       console.log(chalk.green('\n✓ Success!'));
-      console.log(chalk.dim(`  Server map: mcp/server-map.json`));
-      console.log(chalk.dim(`  Wrappers: mcp/servers/`));
       console.log(chalk.dim(`  Manifest: .agent-ready.json`));
+
+      // Show sources
+      if (result.manifest.sources.mcp?.length) {
+        console.log(chalk.blue(`\n  MCP Sources: ${result.manifest.sources.mcp.join(', ')}`));
+      }
+      if (result.manifest.sources.openapi?.length) {
+        console.log(chalk.blue(`  REST APIs: ${result.manifest.sources.openapi.join(', ')}`));
+      }
+      if (result.manifest.sources.graphql?.length) {
+        console.log(chalk.blue(`  GraphQL: ${result.manifest.sources.graphql.join(', ')}`));
+      }
+
       console.log(
         chalk.yellow(`\n📊 Token reduction: ${result.benchmark.reductionPercentage}%`)
       );
@@ -65,33 +69,38 @@ program
   });
 
 /**
- * Generate command: generate wrappers for specific server
+ * Init command: create a sample config file
  */
 program
-  .command('generate <server>')
-  .description('Generate wrappers for a specific MCP server')
-  .option('-o, --output <dir>', 'Output directory (default: ./mcp)')
-  .action(async (serverName, options) => {
-    const spinner = ora(`Generating wrappers for ${serverName}...`).start();
+  .command('init')
+  .description('Create a sample codegen.config.json file')
+  .action(() => {
+    const configPath = './codegen.config.json';
 
-    try {
-      const orchestrator = new Orchestrator({
-        outputDir: options.output,
-      });
-
-      const wrappers = await orchestrator.generateServer(serverName);
-
-      spinner.succeed(`Generated ${wrappers.length} wrappers for ${serverName}`);
-
-      console.log(chalk.green('\n✓ Success!'));
-      for (const wrapper of wrappers) {
-        console.log(chalk.dim(`  ${wrapper.toolName} → ${wrapper.filePath}`));
-      }
-    } catch (error) {
-      spinner.fail('Failed to generate');
-      console.error(chalk.red('\n' + (error instanceof Error ? error.message : String(error))));
-      process.exit(1);
+    if (fs.existsSync(configPath)) {
+      console.log(chalk.yellow('⚠️  codegen.config.json already exists'));
+      return;
     }
+
+    const sampleConfig = {
+      sources: {
+        mcp: {
+          filesystem: {
+            type: 'mcp',
+            command: 'npx',
+            args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()]
+          }
+        }
+      },
+      outputDir: './codegen',
+      runtimePackage: '@mcp-codegen/runtime'
+    };
+
+    fs.writeFileSync(configPath, JSON.stringify(sampleConfig, null, 2));
+    console.log(chalk.green('✓ Created codegen.config.json'));
+    console.log(chalk.dim('\nNext steps:'));
+    console.log(chalk.dim('  1. Edit codegen.config.json to add your sources'));
+    console.log(chalk.dim('  2. Run: mcp-codegen sync'));
   });
 
 /**
