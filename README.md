@@ -25,18 +25,18 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
 **The Result:** 98% fewer tokens, better performance, cleaner code.
 
-### How MCP-CODEGEN Improves on Code Mode
+### How MCP-CODEGEN Extends Code Mode
 
-While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
+Building on Anthropic's Code Mode for MCP servers and Cloudflare's demonstration on Workers:
 
-**We made it universal:**
--  Works with **multiple API types** - MCP and REST APIs (v1), with GraphQL planned
+**This implementation focuses on:**
+-  **Multiple API types** - MCP and REST APIs (v1), with GraphQL planned
 -  **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
 -  **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
 -  **Open source** - Apache 2.0 licensed, extensible architecture
--  **Proven at scale** - 1,100+ tools from GitHub API with 99.94% reduction
+-  **Scale validation** - 1,100+ tools from GitHub API with 99.94% reduction
 
-**Key innovations:**
+**Additional features:**
 - Universal adapter pattern for multi-source integration
 - Standardized `.agent-ready.json` discovery mechanism
 - Automatic retry with exponential backoff
@@ -44,11 +44,9 @@ While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated
 - Runtime schema normalization for inconsistent APIs
 - Full instrumentation and telemetry support
 
-**Inspired by pioneers:**
+**Built on ideas from:**
 - [Anthropic's MCP Code Mode](https://www.anthropic.com/news/model-context-protocol) - Introduced the concept
 - [Cloudflare's Code Mode](https://blog.cloudflare.com/cloudflare-workers-code-mode) - Demonstrated platform integration
-
-**What we added:** Everything needed to make Code Mode work **universally** in **production** across **any API type**.
 
 ---
 
@@ -437,24 +435,6 @@ See [NOTICE](./NOTICE) and [COPYRIGHT](./COPYRIGHT) for attribution requirements
 
 ---
 
-## Reference Implementation
-
-**This is the original and reference implementation of Universal Code Mode.**
-
-Key contributions originated in this project:
-- Universal adapter pattern for multi-source API integration (November 2025)
-- .agent-ready.json agent discovery mechanism (November 2025)
-- Type-safe wrapper generation across MCP, OpenAPI, and future sources (November 2025)
-- 98% token reduction validation and benchmarking methodology (November 2025)
-
-First public commit: November 2025
-Repository: https://github.com/tyranosurasmax/MCP-CODEGEN
-
-This project extends the Code Mode concept introduced by Anthropic to work universally
-across all API types, not just MCP servers.
-
----
-
 ## Links
 
 - **Documentation:** [ARCHITECTURE.md](./ARCHITECTURE.md)
@@ -466,40 +446,43 @@ across all API types, not just MCP servers.
 
 ## Acknowledgments
 
-This project **significantly extends and improves upon** groundbreaking work by:
+This project builds upon groundbreaking work by:
 
 ### Anthropic's MCP Code Mode
 - **What they pioneered:** Model Context Protocol and Code Mode concept for MCP servers
 - **What they proved:** Token reduction makes LLM-tool integration practical
-- **What we added:** Universal support (MCP + REST in v1, GraphQL planned), production infrastructure, open source implementation
 - [Read the MCP announcement](https://www.anthropic.com/news/model-context-protocol) | [MCP Specification](https://spec.modelcontextprotocol.io/)
 
 ### Cloudflare's Code Mode
 - **What they pioneered:** Code Mode on Workers platform with V8 isolate security
 - **What they proved:** Code generation can replace verbose tool definitions
-- **What we added:** Platform independence, multi-source support, enterprise features, Apache 2.0 license
 - [Read the Code Mode article](https://blog.cloudflare.com/cloudflare-workers-code-mode)
 
-### Our Innovations
-
-**Universal Code Mode is not just an implementation—it's a significant evolution:**
-
-1. **Universal Adapter Pattern** - Works with any API type, not locked to one protocol or platform
-2. **Production Infrastructure** - Error handling, retries, auth, instrumentation out of the box
-3. **Standardized Discovery** - `.agent-ready.json` format for agent tool discovery
-4. **Schema Normalization** - Handles inconsistent APIs automatically
-5. **Enterprise Auth** - 5 auth types with env var resolution and token refresh
-6. **Open Source** - Apache 2.0, extensible, community-driven
-
-**Additional Inspiration:**
+### Additional Inspiration
 - **OpenAPI Generator** - REST API codegen patterns
 - **Prisma** - Database abstraction excellence
 - **The MCP Community** - Tool authors and early adopters
-
-**We took the Code Mode concept and made it production-ready, universal, and open source.**
 
 ---
 
 **Built with the belief that AI agents deserve infrastructure as good as the APIs they call.**
 
 **Transform ANY API. One tool. 98% reduction. Fully typed.**
+
+---
+
+## Background & Motivation
+
+This project explores a "Universal Code Mode" pattern—extending the Code Mode concept introduced by Anthropic for MCP servers to work across multiple API types (MCP, REST, and potentially GraphQL in future releases).
+
+**What we're proposing:**
+- A universal adapter pattern for multi-source API integration
+- A shared `.agent-ready.json` format that others can adopt for agent tool discovery
+- Production-grade infrastructure (error handling, retries, auth, instrumentation)
+- Open source Apache 2.0 implementation for community collaboration
+
+**Our goal:** Make Code Mode's token reduction benefits available across any API type, not just MCP servers, while keeping the implementation open and extensible.
+
+The project started in November 2025 and continues to evolve based on community feedback and real-world usage.
+
+Repository: https://github.com/tyranosurasmax/MCP-CODEGEN
