@@ -118,7 +118,7 @@ export class WrapperGenerator {
 // DO NOT EDIT BELOW THIS LINE
 // hash: ${hash}
 ${warningComments}
-import { callMCPToolTyped } from "${runtimePackage}";
+import { callTyped } from "${runtimePackage}";
 
 ${paramsType}
 
@@ -134,7 +134,7 @@ export const toolMeta = {
  * ${description || toolName}
  */
 export async function ${functionName}(params: ${paramsInterface}): Promise<${resultInterface}> {
-  return callMCPToolTyped<${paramsInterface}, ${resultInterface}>("${serverName}__${toolName}", params);
+  return callTyped<${paramsInterface}, ${resultInterface}>("${serverName}__${toolName}", params);
 }
 
 ${AUTO_GEN_END}
