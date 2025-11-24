@@ -14,7 +14,7 @@
 
 **MCP-CODEGEN generates type-safe TypeScript wrappers that reduce API token usage by 98%.**
 
-Instead of sending massive API specifications (150K+ tokens) in every prompt, generate tiny wrapper code (2K tokens) that LLM agents can import and use like regular functions. Works with MCP servers and REST APIs (v1), with GraphQL planned.
+Instead of sending massive API specifications (150K+ tokens) in every prompt, generate tiny wrapper code (2K tokens) that LLM agents can import and use like regular functions. Works with MCP servers and REST APIs.
 
 **The result:** Same functionality, 98% fewer tokens, full type safety.
 
@@ -165,10 +165,10 @@ Environment variables are resolved automatically (`${VAR_NAME}`).
 
 ## Features
 
-- **Universal Source Support**: MCP servers + REST APIs in v1
+- **Universal Source Support**: MCP servers + REST APIs
 - **98% Token Reduction**: Validated across multiple API types ([benchmarks](docs/benchmarks.md))
 - **Type-Safe**: Full TypeScript support with IDE autocomplete
-- **Production Ready**: Retries, auth, connection pooling, instrumentation
+- **Production-Safe**: Sane defaults for retries, auth, and error handling
 - **Platform Agnostic**: Runs anywhere Node.js runs
 - **Open Source**: Apache 2.0 licensed, extensible architecture
 
@@ -176,6 +176,7 @@ Environment variables are resolved automatically (`${VAR_NAME}`).
 
 ## Documentation
 
+- **[Runtime Contract](./RUNTIME_CONTRACT.md)** - Stable API specification (semver-sensitive)
 - **[Architecture](./ARCHITECTURE.md)** - System design and adapter patterns
 - **[Benchmarks](docs/benchmarks.md)** - Token reduction validation and performance metrics
 - **[Comparisons](docs/comparisons.md)** - vs. Anthropic, Cloudflare, OpenAPI Generator, Prisma
@@ -249,17 +250,17 @@ This project builds upon groundbreaking work by:
 
 ## Background & Motivation
 
-This project explores a "Universal Code Mode" pattern—extending the Code Mode concept introduced by Anthropic for MCP servers to work across multiple API types (MCP, REST, and potentially GraphQL in future releases).
+This project explores a "Universal Code Mode" pattern—extending the Code Mode concept introduced by Anthropic for MCP servers to work across multiple API types.
 
 **What we're proposing:**
 - A universal adapter pattern for multi-source API integration
-- A shared `.agent-ready.json` format that others can adopt for agent tool discovery
-- Production-grade infrastructure (error handling, retries, auth, instrumentation)
+- A shared `.agent-ready.json` format that others could adopt for agent tool discovery
+- Production-safe defaults (error handling, retries, auth)
 - Open source Apache 2.0 implementation for community collaboration
 
-**Our goal:** Make Code Mode's token reduction benefits available across any API type, not just MCP servers, while keeping the implementation open and extensible.
+**Our goal:** Make Code Mode's token reduction benefits available across multiple API types, while keeping the implementation open and extensible.
 
-The project started in November 2025 and continues to evolve based on community feedback and real-world usage.
+Started November 2025, evolving based on community feedback and real-world usage.
 
 ---
 
