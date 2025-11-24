@@ -1,0 +1,63 @@
+{
+  "name": "@mcp-codegen/runtime",
+  "version": "1.1.0",
+  "description": "Universal runtime for MCP-CODEGEN - handles MCP, REST, GraphQL, and database tool execution",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./errors": "./dist/errors.js",
+    "./auth": "./dist/auth-resolver.js",
+    "./retry": "./dist/retry-policy.js",
+    "./schema": "./dist/schema-normalizer.js",
+    "./instrumentation": "./dist/instrumentation.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "../LICENSE",
+    "../RUNTIME_CONTRACT.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "echo \"Tests in main package\"",
+    "prepublishOnly": "npm run build",
+    "lint": "echo \"Lint in main package\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "openapi",
+    "rest",
+    "graphql",
+    "runtime",
+    "llm",
+    "ai-agents",
+    "code-mode",
+    "universal-runtime"
+  ],
+  "author": "Maxwell King <maxwellgriffinking@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tyranosurasmax/MCP-CODEGEN.git",
+    "directory": "packages/runtime"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
