@@ -30,7 +30,7 @@ Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
 
 **We made it universal:**
-- ✅ Works with **any API type** - MCP, REST, GraphQL not just one protocol
+- ✅ Works with **multiple API types** - MCP and REST APIs (v1), with GraphQL planned
 - ✅ **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
 - ✅ **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
 - ✅ **Open source** - Apache 2.0 licensed, extensible architecture
@@ -54,12 +54,19 @@ While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated
 
 ## Supported Sources
 
+### Implemented (v1)
 | Source Type | Status | Use Case |
 |-------------|--------|----------|
-| **MCP Servers** | Production | Claude Desktop tools, local services |
-| **REST APIs** | Production | GitHub, Stripe, any OpenAPI spec |
+| **MCP Servers** | ✅ Production | Claude Desktop tools, local services |
+| **REST APIs** | ✅ Production | GitHub, Stripe, any OpenAPI spec |
 
-Both adapters are production-ready and fully functional.
+### Planned (Future Releases)
+| Source Type | Status | Use Case |
+|-------------|--------|----------|
+| **GraphQL APIs** | ⏳ Planned | GitHub GraphQL, Shopify, Hasura |
+| **Databases** | ⏳ Planned | Prisma-style introspection |
+
+**v1 Scope:** MCP + OpenAPI REST. Both adapters are production-ready and fully functional.
 
 ---
 
@@ -136,7 +143,7 @@ await call("filesystem__write_file", {
 
 ### What We Actually Do
 
-1. **Discover** API sources (MCP servers, OpenAPI specs, GraphQL schemas)
+1. **Discover** API sources (MCP servers, OpenAPI specs; GraphQL planned)
 2. **Generate** type-safe TypeScript wrappers optimized for LLM consumption
 3. **Reduce** token usage by 98% compared to sending raw API specifications
 4. **Enable** AI agents to explore and call APIs through generated code instead of massive spec files
@@ -149,9 +156,9 @@ The key innovation: Instead of sending a 150K token API specification in every p
 
 ### The Problem
 Every API type has massive specifications:
-- **MCP**: Tool definitions (152K tokens)
-- **OpenAPI**: REST specs (200K+ tokens)
-- **GraphQL**: Schema introspection (100K+ tokens)
+- **MCP**: Tool definitions (152K tokens) ✅ v1
+- **OpenAPI**: REST specs (200K+ tokens) ✅ v1
+- **GraphQL**: Schema introspection (100K+ tokens) ⏳ Planned
 
 ### The Solution
 Convert them all to tiny TypeScript wrappers:
@@ -159,6 +166,8 @@ Convert them all to tiny TypeScript wrappers:
 - **Reduction**: 98% across the board
 - **Format**: One consistent pattern
 - **Runtime**: Single universal runtime
+
+**Current:** MCP + REST fully implemented. **Vision:** Expand to GraphQL, databases, and more.
 
 ---
 
@@ -193,7 +202,7 @@ Convert them all to tiny TypeScript wrappers:
 ```
 ┌─────────────────────────────┐
 │   ANY API SOURCE            │
-│  MCP | REST | GraphQL       │
+│  MCP | REST (+ more planned)│
 └──────────────┬──────────────┘
                │
         ┌──────▼────────┐
@@ -341,7 +350,7 @@ mcp-codegen quickstart
 
 ### vs. Anthropic's MCP Code Mode
 **Improvements:**
-- ✅ Universal (REST, GraphQL) vs. MCP-only
+- ✅ Universal (MCP + REST in v1, GraphQL planned) vs. MCP-only
 - ✅ Production infrastructure (retries, auth, instrumentation)
 - ✅ Open source and extensible
 - ✅ Same 98%+ token reduction
@@ -353,7 +362,7 @@ mcp-codegen quickstart
 ### vs. Cloudflare's Code Mode
 **Improvements:**
 - ✅ Platform-agnostic (runs anywhere) vs. Workers-only
-- ✅ More source types (MCP, REST, GraphQL)
+- ✅ More source types (MCP + REST in v1, more planned)
 - ✅ Enterprise features (auth, retries, monitoring)
 - ✅ Open source with Apache 2.0 license
 
@@ -440,7 +449,7 @@ This project **significantly extends and improves upon** groundbreaking work by:
 ### Anthropic's MCP Code Mode
 - **What they pioneered:** Model Context Protocol and Code Mode concept for MCP servers
 - **What they proved:** Token reduction makes LLM-tool integration practical
-- **What we added:** Universal support (REST, GraphQL), production infrastructure, open source implementation
+- **What we added:** Universal support (MCP + REST in v1, GraphQL planned), production infrastructure, open source implementation
 - [Read the MCP announcement](https://www.anthropic.com/news/model-context-protocol) | [MCP Specification](https://spec.modelcontextprotocol.io/)
 
 ### Cloudflare's Code Mode
