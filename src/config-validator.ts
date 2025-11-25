@@ -517,10 +517,10 @@ export function formatValidationErrors(errors: ValidationError[]): string {
   ];
 
   for (const error of errors) {
-    lines.push(`   ${error.field}`);
-    lines.push(`     ${error.message}`);
+    lines.push(`  - ${error.field}`);
+    lines.push(`    ${error.message}`);
     if (error.value !== undefined) {
-      lines.push(`     Got: ${JSON.stringify(error.value)}`);
+      lines.push(`    Got: ${JSON.stringify(error.value)}`);
     }
     lines.push("");
   }
