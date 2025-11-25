@@ -1,6 +1,6 @@
 # MCP-CODEGEN
 
-**Universal Code Mode for APIs, Services, and Tools**
+**Universal, Model-Agnostic Tool Compiler for LLM Agents**
 
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
 ![Version](https://img.shields.io/badge/version-1.1.0-blue)
@@ -10,32 +10,50 @@
 
 ---
 
+## 🌐 Works With Any LLM Provider
+
+**Generate once. Use with Claude, GPT-4, Gemini, Llama, Ollama, or any other model.**
+
+Ahead-of-time compilation approach — no runtime API dependencies, no vendor lock-in.
+
+**API Coverage:**
+- ✅ **OpenAPI/REST** (Production - 1,100+ tools from GitHub API alone)
+- ✅ **MCP Servers** (Production - Compatible with Anthropic's MCP ecosystem)
+- 🔄 **GraphQL** (Planned - GitHub GraphQL, Shopify, Hasura)
+
+---
+
 ## What is this?
 
-**MCP-CODEGEN generates type-safe TypeScript wrappers that reduce API token usage by 98%.**
+**A universal tool compiler that generates type-safe TypeScript wrappers for ANY API that work with ANY LLM.**
 
-Instead of sending massive API specifications (150K+ tokens) in every prompt, generate tiny wrapper code (2K tokens) that LLM agents can import and use like regular functions. Works with MCP servers and REST APIs.
+Instead of sending massive API specifications (150K+ tokens) to your LLM in every prompt, compile them once into tiny wrapper code (2K tokens). The same generated wrappers work with Claude, GPT-4, Gemini, or local models.
 
-**The result:** Same functionality, 98% fewer tokens, full type safety.
+**The approach:**
+- **Ahead-of-time compilation** (like Prisma for databases)
+- **Not runtime interpretation** (like Anthropic's Tool Search)
+- **Model-agnostic** (works with any LLM provider)
+- **Zero runtime overhead** (no API calls, no dependencies)
 
-Built on the Code Mode concept introduced by [Anthropic](https://www.anthropic.com/news/model-context-protocol) and [Cloudflare](https://blog.cloudflare.com/cloudflare-workers-code-mode), extended to work universally across multiple API types.
+**The result:** 98% fewer tokens, works anywhere, full type safety.
 
 ---
 
 ## Who should use this?
 
 ### Ideal for:
-- **Building LLM agents** that need to call many tools or APIs
-- **Already using** MCP servers or OpenAPI specs
+- **Multi-model teams** using Claude + GPT-4 + Gemini + local models
+- **Self-hosted AI** running Ollama, Llama, or other local models
+- **Teams with OpenAPI specs** who want LLM-optimized wrappers
+- **Avoiding vendor lock-in** - same wrappers work with any provider
 - **Hitting token limits** or paying high costs to send specs repeatedly
-- **Want type safety** for agent-API interactions
-- **Need production features** like retries, auth, and monitoring
+- **Need deterministic builds** - compile once, version control, audit
 
 ### Not ideal for:
+- **Claude-only workflows** using Anthropic's MCP exclusively → [Anthropic Tool Search](https://www.anthropic.com/engineering/advanced-tool-use) may be simpler
 - **Just want a REST SDK** for human developers → use [OpenAPI Generator](https://openapi-generator.tech/)
 - **Don't control agent code** → need runtime protocol integration instead
 - **Only need one or two API calls** → overhead not worth it
-- **Building on Cloudflare Workers** → use [Cloudflare's Code Mode](https://blog.cloudflare.com/cloudflare-workers-code-mode)
 
 ---
 
@@ -165,11 +183,13 @@ Environment variables are resolved automatically (`${VAR_NAME}`).
 
 ## Features
 
-- **Universal Source Support**: MCP servers + REST APIs
+- **Model-Agnostic**: Works with Claude, GPT-4, Gemini, Llama, Ollama, any LLM
+- **Universal APIs**: OpenAPI/REST + MCP servers (GraphQL planned)
 - **98% Token Reduction**: Validated across multiple API types ([benchmarks](docs/benchmarks.md))
+- **Ahead-of-Time Compilation**: Generate once, use everywhere, zero runtime overhead
 - **Type-Safe**: Full TypeScript support with IDE autocomplete
 - **Production-Safe**: Sane defaults for retries, auth, and error handling
-- **Platform Agnostic**: Runs anywhere Node.js runs
+- **Self-Hosted Friendly**: No external API dependencies, works offline
 - **Open Source**: Apache 2.0 licensed, extensible architecture
 
 ---

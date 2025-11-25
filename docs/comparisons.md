@@ -1,5 +1,50 @@
 # Comparisons
 
+## vs. Anthropic's Tool Search
+
+### What Anthropic Built
+- **Runtime tool search** via Anthropic API calls
+- Integrated into Claude's context protocol
+- Dynamic tool discovery at runtime
+- MCP server support with automatic indexing
+- Built into Claude's inference pipeline
+
+### How MCP-CODEGEN Differs
+
+**Different Approaches:**
+- **Anthropic**: Runtime interpretation (dynamic SQL)
+- **MCP-CODEGEN**: Ahead-of-time compilation (Prisma)
+
+**Feature Comparison:**
+
+| Feature | MCP-CODEGEN | Anthropic Tool Search |
+|---------|-------------|---------------------|
+| **Model Support** | Any (Claude, GPT-4, Gemini, local) | Claude only |
+| **API Types** | OpenAPI REST + MCP | MCP only |
+| **Approach** | Compile once, use anywhere | Runtime search per query |
+| **Runtime Cost** | Zero (static code) | API calls per tool search |
+| **Offline Use** | Yes | No (requires Anthropic API) |
+| **Self-Hosted** | Yes | No |
+| **Version Control** | Yes (generated code) | No (runtime interpretation) |
+| **Deterministic** | Yes (same input = same output) | No (API-dependent) |
+| **Multi-Model** | Yes | No |
+
+**When to Use Which:**
+- **Anthropic Tool Search**: Claude-only workflows, need dynamic discovery, want zero-setup experience
+- **MCP-CODEGEN**: Multi-model teams, REST APIs, self-hosted, need determinism/auditability
+
+**Key Insight:** These are **complementary approaches**, not competing ones:
+- Anthropic's = Dynamic flexibility, zero-config, Claude-specific
+- MCP-CODEGEN = Static safety, model-agnostic, deterministic
+
+Both valid. MCP-CODEGEN suits teams that:
+- Use multiple LLM providers (Claude + GPT + Gemini)
+- Need REST API coverage (OpenAPI specs)
+- Want offline/self-hosted capabilities
+- Require version-controlled, auditable builds
+
+---
+
 ## vs. Anthropic's MCP Code Mode
 
 ### What Anthropic Built
