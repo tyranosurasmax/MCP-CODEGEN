@@ -12,7 +12,7 @@ import {
   rateLimitError,
   networkError,
   shouldRetry
-} from "../../src/runtime/errors";
+} from "@mcp-codegen/runtime";
 
 describe("CodegenError", () => {
   describe("constructor", () => {
@@ -129,6 +129,28 @@ describe("CodegenError", () => {
         retryable: true
       });
 
+      expect(shouldRetry(error, 3, 3)).toBe(false);
+    });
+
+    it("should retry when max attempts not reached", () => {
+      const error = new CodegenError({
+        code: "TEST",
+        message: "Test",
+        category: ErrorCategory.TRANSPORT,
+        retryable: true
+      });
+
+      expect(shouldRetry(error, 1, 3)).toBe(true);
+    });
+
+    it("should work without maxAttempts parameter for backward compatibility", () => {
+      const error = new CodegenError({
+        code: "TEST",
+        message: "Test",
+        category: ErrorCategory.TRANSPORT,
+        retryable: true
+      });
+
       expect(shouldRetry(error, 3)).toBe(true);
     });
 
@@ -140,7 +162,7 @@ describe("CodegenError", () => {
         retryable: false
       });
 
-      expect(shouldRetry(error, 1)).toBe(false);
+      expect(shouldRetry(error, 1, 3)).toBe(false);
     });
 
     it("should retry transport errors", () => {
@@ -151,7 +173,7 @@ describe("CodegenError", () => {
         retryable: true
       });
 
-      expect(shouldRetry(error, 1)).toBe(true);
+      expect(shouldRetry(error, 1, 3)).toBe(true);
     });
 
     it("should retry 5xx errors but not 4xx", () => {
@@ -169,8 +191,8 @@ describe("CodegenError", () => {
         retryable: false
       });
 
-      expect(shouldRetry(error5xx, 1)).toBe(true);
-      expect(shouldRetry(error4xx, 1)).toBe(false);
+      expect(shouldRetry(error5xx, 1, 3)).toBe(true);
+      expect(shouldRetry(error4xx, 1, 3)).toBe(false);
     });
   });
 });
