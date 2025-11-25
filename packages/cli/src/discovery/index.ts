@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { ServerMap, MCPServerConfig } from '../types';
+import { ServerMap } from '../types';
 
 export class ServerDiscovery {
   private sources: string[] = [];

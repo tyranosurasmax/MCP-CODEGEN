@@ -290,7 +290,6 @@ export function executionError(toolName: string, message: string, originalError?
 
 export function httpError(status: number, statusText: string, url: string): CodegenError {
   const is5xx = status >= 500 && status < 600;
-  const is4xx = status >= 400 && status < 500;
 
   return new CodegenError({
     code: is5xx ? ErrorCode.HTTP_ERROR_5XX : ErrorCode.HTTP_ERROR_4XX,
