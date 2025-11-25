@@ -305,9 +305,7 @@ describe('GraphQLAdapter', () => {
 
 describe('GraphQLAdapter Integration (requires real GraphQL server)', () => {
   // These tests would run against a real GraphQL server
-  // Skip them if server is not available
-
-  const hasTestServer = process.env.GRAPHQL_TEST_SERVER === 'true';
+  // Set GRAPHQL_TEST_SERVER=true to enable these tests
 
   describe.skip('Real Server Tests', () => {
     let adapter: GraphQLAdapter;
