@@ -3,8 +3,6 @@
  */
 
 import { validateConfig, formatValidationErrors } from "../src/config-validator";
-import * as fs from "fs";
-import * as path from "path";
 
 describe("Config Validator", () => {
   describe("validateConfig", () => {

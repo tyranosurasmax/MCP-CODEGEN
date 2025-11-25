@@ -13,7 +13,6 @@ import {
   AuthConfig,
   CodegenError,
   ErrorCategory,
-  connectionError,
   executionError,
   timeoutError,
 } from '@mcp-codegen/runtime';

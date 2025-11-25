@@ -5,9 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { ServerDiscovery, saveServerMap } from './discovery';
 import { WrapperGenerator } from './codegen/wrapper-generator';
-import { call, callTyped } from '@mcp-codegen/runtime';
 import { MCPAdapter } from './adapters/mcp-adapter';
 import { OpenAPIAdapter } from './adapters/openapi-adapter';
 import { GraphQLAdapter } from './adapters/graphql-adapter';

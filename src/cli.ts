@@ -45,12 +45,12 @@ program
         `Generated ${result.wrappers.length} wrappers for ${Object.keys(result.serverMap).length} servers`
       );
 
-      console.log(chalk.green('\n Success!'));
+      console.log(chalk.green('\n[OK] Success!'));
       console.log(chalk.dim(`  Server map: mcp/server-map.json`));
       console.log(chalk.dim(`  Wrappers: mcp/servers/`));
       console.log(chalk.dim(`  Manifest: .agent-ready.json`));
       console.log(
-        chalk.yellow(`\n Token reduction: ${result.benchmark.reductionPercentage}%`)
+        chalk.yellow(`\n[INFO] Token reduction: ${result.benchmark.reductionPercentage}%`)
       );
       console.log(
         chalk.dim(

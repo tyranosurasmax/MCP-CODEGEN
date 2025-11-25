@@ -225,6 +225,7 @@ describe('MCPAdapter Integration (requires real MCP server)', () => {
   // These tests would run against a real MCP server
   // Skip them if server is not available
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const hasTestServer = process.env.MCP_TEST_SERVER === 'true';
 
   describe.skip('Real Server Tests', () => {

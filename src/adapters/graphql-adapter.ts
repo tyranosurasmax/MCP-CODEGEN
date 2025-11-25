@@ -12,7 +12,6 @@ import { resolveAuth, AuthConfig } from '../runtime/auth-resolver';
 import {
   CodegenError,
   ErrorCategory,
-  connectionError,
   executionError,
   timeoutError,
 } from '../runtime/errors';
