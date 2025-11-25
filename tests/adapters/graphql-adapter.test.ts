@@ -161,10 +161,11 @@ describe('GraphQLAdapter', () => {
   });
 
   describe('Error Handling', () => {
-    it('should handle network errors', async () => {
+    it('should handle timeout errors', async () => {
       const config: GraphQLConfig = {
         type: 'graphql',
-        endpoint: 'https://unreachable-host.example.com/graphql',
+        endpoint: 'https://httpstat.us/200?sleep=60000',
+        timeout: 100,
       };
 
       const adapter = new GraphQLAdapter('test-api', config);
