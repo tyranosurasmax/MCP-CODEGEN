@@ -39,7 +39,7 @@ program
         `Generated ${result.manifest.tools.total} tools from ${result.manifest.sources.total} sources`
       );
 
-      console.log(chalk.green('\n Success!'));
+      console.log(chalk.green('\n[OK] Success!'));
       console.log(chalk.dim(`  Manifest: .agent-ready.json`));
 
       // Show sources
@@ -54,7 +54,7 @@ program
       }
 
       console.log(
-        chalk.yellow(`\n Token reduction: ${result.benchmark.reductionPercentage}%`)
+        chalk.yellow(`\n[INFO] Token reduction: ${result.benchmark.reductionPercentage}%`)
       );
       console.log(
         chalk.dim(
