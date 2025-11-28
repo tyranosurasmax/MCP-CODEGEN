@@ -18,7 +18,7 @@ const program = new Command();
 
 program
   .name('mcp-codegen')
-  .description('Transform MCP servers into TypeScript tool filesystems')
+  .description('Universal Code Mode - Transform APIs into type-safe TypeScript wrappers with 98% token reduction')
   .version('1.1.0');
 
 /**
@@ -209,6 +209,152 @@ program
       console.log(chalk.bold.green('\nCode Mode is active. Your agents can now use optimized wrappers!\n'));
     } catch (error) {
       spinner.fail('Quickstart failed');
+      console.error(chalk.red('\n' + (error instanceof Error ? error.message : String(error))));
+      process.exit(1);
+    }
+  });
+
+/**
+ * Validate command: validate manifest against ATM specification
+ */
+program
+  .command('validate [file]')
+  .description('Validate .agent-ready.json against ATM specification')
+  .action(async (file) => {
+    const manifestPath = file || '.agent-ready.json';
+    const spinner = ora(`Validating ${manifestPath}...`).start();
+
+    try {
+      if (!fs.existsSync(manifestPath)) {
+        spinner.fail(`File not found: ${manifestPath}`);
+        process.exit(1);
+      }
+
+      const content = fs.readFileSync(manifestPath, 'utf-8');
+      let manifest: any;
+
+      try {
+        manifest = JSON.parse(content);
+      } catch (e) {
+        spinner.fail('Invalid JSON');
+        console.error(chalk.red('\nFailed to parse JSON'));
+        process.exit(1);
+      }
+
+      // Required fields per ATM Spec
+      const requiredFields = [
+        'specVersion',
+        'codeMode',
+        'name',
+        'description',
+        'version',
+        'generated',
+        'sources',
+        'tools',
+        'paths',
+        'capabilities',
+      ];
+
+      const errors: string[] = [];
+      const warnings: string[] = [];
+
+      // Check required fields
+      for (const field of requiredFields) {
+        if (!(field in manifest)) {
+          errors.push(`Missing required field: ${field}`);
+        }
+      }
+
+      // Validate codeMode
+      if (manifest.codeMode !== true) {
+        errors.push('codeMode must be true');
+      }
+
+      // Validate specVersion format
+      if (manifest.specVersion && !/^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$/.test(manifest.specVersion)) {
+        errors.push('specVersion must be semantic version (e.g., 1.0.0)');
+      }
+
+      // Validate name format
+      if (manifest.name && !/^[a-z][a-z0-9-]*$/.test(manifest.name)) {
+        errors.push('name must be lowercase alphanumeric with hyphens');
+      }
+
+      // Validate sources structure
+      if (manifest.sources) {
+        if (typeof manifest.sources.total !== 'number') {
+          errors.push('sources.total must be a number');
+        }
+      }
+
+      // Validate tools structure
+      if (manifest.tools) {
+        if (typeof manifest.tools.total !== 'number') {
+          errors.push('tools.total must be a number');
+        }
+        if (!manifest.tools.bySource || typeof manifest.tools.bySource !== 'object') {
+          errors.push('tools.bySource must be an object');
+        }
+      }
+
+      // Validate paths structure
+      if (manifest.paths) {
+        const pathFields = ['runtime', 'wrappers', 'config'];
+        for (const field of pathFields) {
+          if (typeof manifest.paths[field] !== 'string') {
+            errors.push(`paths.${field} must be a string`);
+          }
+        }
+      }
+
+      // Validate capabilities
+      if (manifest.capabilities && !Array.isArray(manifest.capabilities)) {
+        errors.push('capabilities must be an array');
+      }
+
+      // Warnings for optional but recommended fields
+      if (!manifest.$schema) {
+        warnings.push('Consider adding $schema for editor support');
+      }
+      if (!manifest.tokenReduction) {
+        warnings.push('Consider adding tokenReduction statistics');
+      }
+      if (!manifest.metadata) {
+        warnings.push('Consider adding metadata (generatedBy, homepage)');
+      }
+
+      // Report results
+      if (errors.length > 0) {
+        spinner.fail('Validation failed');
+        console.log(chalk.red('\nErrors:'));
+        for (const error of errors) {
+          console.log(chalk.red(`  ✗ ${error}`));
+        }
+        if (warnings.length > 0) {
+          console.log(chalk.yellow('\nWarnings:'));
+          for (const warning of warnings) {
+            console.log(chalk.yellow(`  ⚠ ${warning}`));
+          }
+        }
+        process.exit(1);
+      }
+
+      spinner.succeed('Validation passed');
+
+      if (warnings.length > 0) {
+        console.log(chalk.yellow('\nWarnings:'));
+        for (const warning of warnings) {
+          console.log(chalk.yellow(`  ⚠ ${warning}`));
+        }
+      }
+
+      console.log(chalk.green('\n✓ Manifest is ATM-compliant'));
+      console.log(chalk.dim(`  Spec Version: ${manifest.specVersion}`));
+      console.log(chalk.dim(`  Name: ${manifest.name}`));
+      console.log(chalk.dim(`  Sources: ${manifest.sources.total}`));
+      console.log(chalk.dim(`  Tools: ${manifest.tools.total}`));
+    } catch (error) {
+      spinner.fail('Validation error');
       console.error(chalk.red('\n' + (error instanceof Error ? error.message : String(error))));
       process.exit(1);
     }

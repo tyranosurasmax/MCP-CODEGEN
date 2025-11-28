@@ -124,7 +124,11 @@ export interface CodegenConfig {
 }
 
 export interface AgentReadyManifest {
+  $schema?: string;
+  specVersion: string;
   codeMode: boolean;
+  name: string;
+  description: string;
   version: string;
   generated: string;
   language: string;
@@ -132,17 +136,13 @@ export interface AgentReadyManifest {
     mcp?: string[];
     openapi?: string[];
     graphql?: string[];
+    database?: string[];
+    custom?: string[];
     total: number;
   };
   tools: {
     total: number;
     bySource: Record<string, number>;
-  };
-  tokenReduction?: {
-    traditional: number;
-    codeMode: number;
-    reduction: number;
-    savings: string;
   };
   paths: {
     runtime: string;
@@ -150,6 +150,28 @@ export interface AgentReadyManifest {
     config: string;
   };
   capabilities: string[];
+  auth?: {
+    required: boolean;
+    sources: Record<string, {
+      types: string[];
+      default?: string;
+      required?: boolean;
+      instructions?: string;
+    }>;
+  };
+  tokenReduction?: {
+    traditional: number;
+    codeMode: number;
+    reduction: number;
+    savings: string;
+  };
+  metadata?: {
+    generatedBy?: string;
+    checksum?: string;
+    homepage?: string;
+    repository?: string;
+    license?: string;
+  };
 }
 
 export interface BenchmarkData {

@@ -258,7 +258,7 @@ export {
   }
 
   /**
-   * Generate .agent-ready.json manifest
+   * Generate .agent-ready.json manifest (ATM Specification compliant)
    */
   private generateManifest(
     adapters: Array<MCPAdapter | OpenAPIAdapter | GraphQLAdapter>,
@@ -287,10 +287,26 @@ export {
     if (mcpSources.length > 0) capabilities.push('mcp-servers');
     if (openapiSources.length > 0) capabilities.push('rest-apis');
     if (graphqlSources.length > 0) capabilities.push('graphql-apis');
-    capabilities.push('connection-pooling');
+    capabilities.push('connection-pooling', 'retry-policy', 'authentication');
+
+    // Build source descriptions for manifest name/description
+    const sourceDescriptions: string[] = [];
+    if (mcpSources.length > 0) sourceDescriptions.push(`MCP (${mcpSources.join(', ')})`);
+    if (openapiSources.length > 0) sourceDescriptions.push(`REST (${openapiSources.join(', ')})`);
+    if (graphqlSources.length > 0) sourceDescriptions.push(`GraphQL (${graphqlSources.join(', ')})`);
+
+    // Generate manifest name from sources (lowercase, hyphenated)
+    const allSourceNames = [...mcpSources, ...openapiSources, ...graphqlSources];
+    const manifestName = allSourceNames.length > 0
+      ? allSourceNames.slice(0, 3).join('-').toLowerCase().replace(/[^a-z0-9-]/g, '-')
+      : 'codegen-tools';
 
     const manifest: AgentReadyManifest = {
+      $schema: 'https://mcp-codegen.dev/schemas/atm/v1.json',
+      specVersion: '1.0.0',
       codeMode: true,
+      name: manifestName,
+      description: `Universal tool wrappers for ${sourceDescriptions.join(' and ') || 'API sources'}`,
       version: '1.1.0',
       generated: new Date().toISOString(),
       language: 'typescript',
@@ -304,18 +320,28 @@ export {
         total: wrappers.length,
         bySource: toolsBySource,
       },
-      tokenReduction: {
-        traditional: benchmark.rawToolsTokens,
-        codeMode: benchmark.codeModeTokens,
-        reduction: benchmark.reductionPercentage / 100,
-        savings: `${benchmark.reductionPercentage.toFixed(1)}%`,
-      },
       paths: {
         runtime: `./${path.relative(process.cwd(), path.join(this.outputDir, 'runtime'))}`,
         wrappers: `./${path.relative(process.cwd(), this.outputDir)}`,
         config: './codegen.config.json',
       },
       capabilities,
+      auth: {
+        required: false,
+        sources: Object.fromEntries(
+          allSourceNames.map(name => [name, { types: ['none'], required: false }])
+        ),
+      },
+      tokenReduction: {
+        traditional: benchmark.rawToolsTokens,
+        codeMode: benchmark.codeModeTokens,
+        reduction: benchmark.reductionPercentage / 100,
+        savings: `${benchmark.reductionPercentage.toFixed(1)}%`,
+      },
+      metadata: {
+        generatedBy: 'mcp-codegen@1.1.0',
+        homepage: 'https://github.com/tyranosurasmax/MCP-CODEGEN',
+      },
     };
 
     fs.writeFileSync(
