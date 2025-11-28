@@ -25,7 +25,7 @@
         },
         "graphql": {
           "type": "object",
-          "description": "GraphQL API configurations (planned v1.2)",
+          "description": "GraphQL API configurations",
           "additionalProperties": {
             "$ref": "#/definitions/GraphQLConfig"
           }
@@ -169,18 +169,41 @@
     },
     "GraphQLConfig": {
       "type": "object",
-      "description": "GraphQL API configuration (planned v1.2)",
+      "description": "GraphQL API configuration",
       "properties": {
         "type": {
           "type": "string",
-          "const": "graphql"
+          "const": "graphql",
+          "description": "Source type identifier"
         },
         "endpoint": {
           "type": "string",
-          "format": "uri"
+          "format": "uri",
+          "description": "GraphQL endpoint URL",
+          "examples": ["https://api.github.com/graphql", "https://mystore.myshopify.com/admin/api/graphql.json"]
         },
         "auth": {
-          "$ref": "#/definitions/AuthConfig"
+          "$ref": "#/definitions/AuthConfig",
+          "description": "Authentication configuration"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Default headers for all requests",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Request timeout in milliseconds",
+          "default": 30000,
+          "minimum": 1000,
+          "maximum": 300000
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Disable this source",
+          "default": false
         }
       },
       "required": ["type", "endpoint"],
