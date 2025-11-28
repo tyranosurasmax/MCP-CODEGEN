@@ -31,9 +31,11 @@
     "config": "./codegen.config.json"
   },
   "capabilities": [
-    "type-safety",
-    "mcp-servers",
-    "rest-apis",
-    "connection-pooling"
+    "code-mode",
+    "type-safe",
+    "universal-sources",
+    "error-handling",
+    "retry-policy",
+    "authentication"
   ]
 }

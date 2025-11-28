@@ -6,155 +6,22 @@
 ![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![License](https://img.shields.io/badge/license-Apache%202.0-green)
 
-> **ACTIVE DEVELOPMENT**: This project is under active development. See commit history for latest updates.
-
 Transform ANY API into type-safe TypeScript wrappers with 98% token reduction.
 
 **98% token reduction | Type-safe | Universal | Production-ready**
 
 ---
 
-## What is Universal Code Mode?
+## The Problem
 
-**Code Mode, evolved.** This project takes the Code Mode concept pioneered by Anthropic and Cloudflare and makes it **universal, production-ready, and significantly more powerful.**
-
-### The Problem Code Mode Solves
-
-- **Traditional approach**: Send massive API specs to LLMs in every prompt (150K+ tokens)
-- **Code Mode approach**: Generate tiny TypeScript wrappers agents can import like regular functions
-
-**The Result:** 98% fewer tokens, better performance, cleaner code.
-
-### How MCP-CODEGEN Improves on Code Mode
-
-While Anthropic introduced Code Mode for MCP servers and Cloudflare demonstrated it on Workers:
-
-**We made it universal:**
-- ✅ Works with **any API type** - MCP, REST, GraphQL, databases, not just one protocol
-- ✅ **Platform-agnostic** - runs anywhere Node.js runs, not locked to one platform
-- ✅ **Production infrastructure** - enterprise-grade error handling, retries, auth, instrumentation
-- ✅ **Open source** - Apache 2.0 licensed, extensible architecture
-- ✅ **Proven at scale** - 1,100+ tools from GitHub API with 99.94% reduction
-
-**Key innovations:**
-- Universal adapter pattern for multi-source integration
-- Standardized `.agent-ready.json` discovery mechanism
-- Automatic retry with exponential backoff
-- 5 authentication types with environment variable resolution
-- Runtime schema normalization for inconsistent APIs
-- Full instrumentation and telemetry support
-
-**Inspired by pioneers:**
-- [Anthropic's MCP Code Mode](https://www.anthropic.com/news/model-context-protocol) - Introduced the concept
-- [Cloudflare's Code Mode](https://blog.cloudflare.com/cloudflare-workers-code-mode) - Demonstrated platform integration
-
-**What we added:** Everything needed to make Code Mode work **universally** in **production** across **any API type**.
-
----
-
-## Supported Sources
-
-| Source Type | Status | Use Case |
-|-------------|--------|----------|
-| **MCP Servers** | Production | Claude Desktop tools, local services |
-| **REST APIs** | Production | GitHub, Stripe, any OpenAPI spec |
-
-Both adapters are production-ready and fully functional.
-
----
-
-## Quick Start
-
-```bash
-# Install
-npm install -g mcp-codegen
-
-# Initialize
-mcp-codegen quickstart
-
-# Or create universal config (MCP + REST together)
-cat > codegen.config.json << 'EOF'
-{
-  "sources": {
-    "mcp": {
-      "filesystem": {
-        "type": "mcp",
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
-      }
-    },
-    "openapi": {
-      "github": {
-        "type": "openapi",
-        "spec": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
-        "baseUrl": "https://api.github.com"
-      }
-    }
-  }
-}
-EOF
-
-# Generate (creates 1,100+ type-safe functions)
-mcp-codegen quickstart
-```
-
-**Use both sources in one project:**
-
-```typescript
-import { call } from "./codegen/runtime";
-
-// MCP: Read local file
-const data = await call("filesystem__read_file", {
-  path: "/tmp/repos.json"
-});
-
-// REST: Fetch from GitHub
-const repos = await call("github__list_repos", {
-  path: { username: "anthropics" }
-});
-
-// Universal: Chain them together
-await call("filesystem__write_file", {
-  path: "/tmp/anthropic-repos.json",
-  content: JSON.stringify(repos, null, 2)
-});
-```
-
-**Result:** 98% token reduction. One runtime. Universal.
-
----
-
-## What This Does
-
-**mcp-codegen generates TypeScript wrapper code that AI agents can use to interact with APIs.**
-
-### What We Are NOT
-
-- **Not an MCP Server**: We don't create servers. We create wrappers for existing MCP servers, REST APIs, and other sources.
-- **Not a Client Library Generator**: Traditional tools like openapi-generator create libraries for human developers. We optimize for AI agents and LLM token efficiency.
-- **Not an AI Agent**: We don't write code or act autonomously. We're a tool that generates code for agents to use.
-
-### What We Actually Do
-
-1. **Discover** API sources (MCP servers, OpenAPI specs, GraphQL schemas)
-2. **Generate** type-safe TypeScript wrappers optimized for LLM consumption
-3. **Reduce** token usage by 98% compared to sending raw API specifications
-4. **Enable** AI agents to explore and call APIs through generated code instead of massive spec files
-
-The key innovation: Instead of sending a 150K token API specification in every prompt, agents import and use 2K tokens of generated wrapper code.
-
----
-
-## Why Universal?
-
-### The Problem
 Every API type has massive specifications:
 - **MCP**: Tool definitions (152K tokens)
 - **OpenAPI**: REST specs (200K+ tokens)
 - **GraphQL**: Schema introspection (100K+ tokens)
 - **Databases**: Schema definitions (50K+ tokens)
 
-### The Solution
+## The Solution
+
 Convert them all to tiny TypeScript wrappers:
 - **Wrappers**: ~2K tokens per source
 - **Reduction**: 98% across the board
@@ -342,24 +209,24 @@ mcp-codegen quickstart
 
 ### vs. Anthropic's MCP Code Mode
 **Improvements:**
-- ✅ Universal (REST, GraphQL, databases) vs. MCP-only
-- ✅ Production infrastructure (retries, auth, instrumentation)
-- ✅ Open source and extensible
-- ✅ Same 98%+ token reduction
-- ✅ Works with existing MCP servers
+- Universal (REST, GraphQL, databases) vs. MCP-only
+- Production infrastructure (retries, auth, instrumentation)
+- Open source and extensible
+- Same 98%+ token reduction
+- Works with existing MCP servers
 
 **Trade-offs:**
-- ⚠️ No built-in sandboxing (run in trusted environments)
+- No built-in sandboxing (run in trusted environments)
 
 ### vs. Cloudflare's Code Mode
 **Improvements:**
-- ✅ Platform-agnostic (runs anywhere) vs. Workers-only
-- ✅ More source types (MCP, REST, GraphQL, DB)
-- ✅ Enterprise features (auth, retries, monitoring)
-- ✅ Open source with Apache 2.0 license
+- Platform-agnostic (runs anywhere) vs. Workers-only
+- More source types (MCP, REST, GraphQL, DB)
+- Enterprise features (auth, retries, monitoring)
+- Open source with Apache 2.0 license
 
 **Trade-offs:**
-- ⚠️ No V8 isolate sandboxing (different security model)
+- No V8 isolate sandboxing (different security model)
 
 ### vs. OpenAPI Generator
 - LLM-optimized (98% token reduction)

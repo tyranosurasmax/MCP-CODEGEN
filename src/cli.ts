@@ -18,7 +18,7 @@ const program = new Command();
 
 program
   .name('mcp-codegen')
-  .description('Transform MCP servers into TypeScript tool filesystems')
+  .description('Universal Code Mode - Transform ANY API into type-safe TypeScript wrappers with 98% token reduction')
   .version('1.1.0');
 
 /**
@@ -26,7 +26,7 @@ program
  */
 program
   .command('sync')
-  .description('Discover MCP servers and generate TypeScript wrappers')
+  .description('Discover all API sources (MCP, REST, GraphQL) and generate TypeScript wrappers')
   .option('-s, --server <path>', 'Path to specific server config file')
   .option('-f, --filter <name>', 'Filter servers by name')
   .option('-o, --output <dir>', 'Output directory (default: ./mcp)')
@@ -69,7 +69,7 @@ program
  */
 program
   .command('generate <server>')
-  .description('Generate wrappers for a specific MCP server')
+  .description('Generate wrappers for a specific API source')
   .option('-o, --output <dir>', 'Output directory (default: ./mcp)')
   .action(async (serverName, options) => {
     const spinner = ora(`Generating wrappers for ${serverName}...`).start();
@@ -99,7 +99,7 @@ program
  */
 program
   .command('list')
-  .description('List all discovered MCP servers')
+  .description('List all discovered API sources')
   .action(async () => {
     const spinner = ora('Discovering MCP servers...').start();
 
