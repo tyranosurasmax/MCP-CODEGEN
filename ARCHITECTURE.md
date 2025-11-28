@@ -245,7 +245,7 @@ onRuntimeEvent("call:error", (event) => {
 - Connects to MCP servers via stdio
 - Manages subprocess lifecycle
 - Handles retries and timeouts
-- Buffers streaming responses (v1.1)
+- Buffers streaming responses
 
 #### **OpenAPIAdapter**
 - Loads OpenAPI 3.x specifications
@@ -253,17 +253,68 @@ onRuntimeEvent("call:error", (event) => {
 - Handles HTTP authentication (Bearer, API Key, Basic)
 - Makes REST API calls via axios
 
-#### **GraphQLAdapter** (Planned v1.2)
-- Introspects GraphQL schemas
-- Converts queries/mutations to tools
-- Handles GraphQL-specific auth
-- Executes operations
+#### **GraphQLAdapter**
+- Introspects GraphQL schemas via introspection query
+- Converts queries/mutations to tool definitions
+- Handles GraphQL-specific auth (Bearer, API Key)
+- Executes operations via HTTP POST
+- Supports both queries and mutations
 
-#### **DatabaseAdapter** (Planned v1.2)
+#### **DatabaseAdapter** (Planned)
 - Introspects database schemas
 - Generates type-safe CRUD operations
 - Supports PostgreSQL, MySQL, SQLite
 - Connection pooling
+
+---
+
+## Agent Tool Manifest Specification
+
+MCP-CODEGEN implements the **Agent Tool Manifest (ATM) Specification** — a universal format for AI agent tool discovery.
+
+See [SPEC.md](./SPEC.md) for the complete specification.
+
+### Key Concepts
+
+The `.agent-ready.json` manifest provides:
+- **Token-efficient discovery** — Agents understand available tools without loading full specs
+- **Universal format** — Same structure regardless of source type (MCP, REST, GraphQL)
+- **Capability flags** — Agents know what features are available
+- **Auth requirements** — Per-source authentication information
+
+### Manifest Structure
+
+```json
+{
+  "specVersion": "1.0.0",
+  "codeMode": true,
+  "name": "my-tools",
+  "description": "MCP and REST API tools",
+  "version": "1.1.0",
+  "generated": "2025-11-28T00:00:00.000Z",
+  "sources": {
+    "mcp": ["filesystem"],
+    "openapi": ["github"],
+    "total": 2
+  },
+  "tools": {
+    "total": 1122,
+    "bySource": { "filesystem": 14, "github": 1108 }
+  },
+  "paths": {
+    "runtime": "./codegen/runtime",
+    "wrappers": "./codegen",
+    "config": "./codegen.config.json"
+  },
+  "capabilities": ["type-safety", "mcp-servers", "rest-apis"],
+  "tokenReduction": {
+    "traditional": 207500,
+    "codeMode": 2500,
+    "reduction": 0.9879,
+    "savings": "98.8%"
+  }
+}
+```
 
 ---
 
@@ -278,6 +329,7 @@ onRuntimeEvent("call:error", (event) => {
 4. Normalize to ToolDefinition format
 5. Generate TypeScript wrappers
 6. Generate per-source index files
+7. Generate .agent-ready.json manifest
 ```
 
 ### Runtime Phase
@@ -317,6 +369,16 @@ onRuntimeEvent("call:error", (event) => {
           "token": "${GITHUB_TOKEN}"
         }
       }
+    },
+    "graphql": {
+      "shopify": {
+        "type": "graphql",
+        "endpoint": "https://mystore.myshopify.com/admin/api/graphql.json",
+        "auth": {
+          "type": "bearer",
+          "token": "${SHOPIFY_TOKEN}"
+        }
+      }
     }
   },
   "outputDir": "./codegen",
@@ -345,6 +407,11 @@ codegen/
 │   │   └── index.ts
 │   └── stripe/
 │       ├── createCharge.ts
+│       └── index.ts
+├── graphql/                # GraphQL wrappers
+│   └── shopify/
+│       ├── queryProducts.ts
+│       ├── createProduct.ts
 │       └── index.ts
 ├── runtime/
 │   └── index.ts           # Universal runtime
@@ -423,6 +490,7 @@ export interface UniversalConfig {
   sources: {
     mcp?: { [name: string]: MCPServerConfig };
     openapi?: { [name: string]: OpenAPIConfig };
+    graphql?: { [name: string]: GraphQLConfig };
     mySource?: { [name: string]: MySourceConfig };  // Add this
   };
 }
@@ -440,14 +508,14 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 |-------------|------------------|------------------|-----------|
 | MCP Server  | ~152,000 tokens  | ~2,000 tokens    | **98.7%** |
 | OpenAPI     | ~200,000 tokens  | ~3,000 tokens    | **98.5%** |
-| GraphQL     | ~100,000 tokens  | ~1,500 tokens    | **98.5%** (estimated) |
+| GraphQL     | ~100,000 tokens  | ~1,500 tokens    | **98.5%** |
 
 ### Runtime Performance
 
 - **MCP**: Persistent subprocess connections
 - **REST**: HTTP connection pooling via axios
-- **GraphQL**: Single endpoint, batched queries
-- **Database**: Connection pooling
+- **GraphQL**: Single endpoint, query batching possible
+- **Database**: Connection pooling (planned)
 
 ---
 
@@ -457,9 +525,10 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 
 - **MCP**: Subprocess isolation (limited)
 - **REST**: API keys via environment variables
+- **GraphQL**: Bearer tokens via environment variables
 - **No sandboxing**: Generated code runs with full privileges
 
-### Planned (v1.2+)
+### Planned
 
 - **Sandboxing**: VM2 or isolated-vm for Node.js
 - **Credential Management**: Vault integration, secret rotation
@@ -468,13 +537,13 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 
 ---
 
-## Future Roadmap
+## Roadmap
 
-### v1.2 - Multi-Source Maturity
-- GraphQL adapter
-- Database adapter
-- State management
-- Enhanced security
+### v1.2 - Database Support
+- Database adapter (PostgreSQL, MySQL, SQLite)
+- Schema introspection
+- Type-safe CRUD operations
+- Connection pooling
 
 ### v1.3 - Advanced Features
 - Streaming support
@@ -501,7 +570,7 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 ### Anthropic's Code Mode (MCP only)
 - Supports MCP servers
 - Token reduction for MCP tools
-- We add: REST, GraphQL, database support
+- We extend with: REST, GraphQL, database support
 
 ### Cloudflare's Code Mode
 - MCP and code execution on Workers platform
@@ -545,7 +614,7 @@ That's it! The rest (codegen, runtime, CLI) works automatically.
 ### Why Not Full Streaming Yet?
 - Complexity vs. value tradeoff
 - Most tools return small payloads
-- Coming in v1.2 when it's critical
+- Coming in v1.3 when it's critical
 
 ---
 

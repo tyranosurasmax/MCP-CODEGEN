@@ -1,0 +1,437 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mcp-codegen.dev/schemas/atm/v1.json",
+  "title": "Agent Tool Manifest",
+  "description": "Universal format for AI agent tool discovery. See https://github.com/tyranosurasmax/MCP-CODEGEN for specification.",
+  "type": "object",
+  "required": [
+    "specVersion",
+    "codeMode",
+    "name",
+    "description",
+    "version",
+    "generated",
+    "sources",
+    "tools",
+    "paths",
+    "capabilities"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "JSON Schema reference for validation and editor support"
+    },
+    "specVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9]+)?$",
+      "description": "Semantic version of the ATM specification this manifest conforms to",
+      "examples": ["1.0.0", "1.0.0-draft"]
+    },
+    "codeMode": {
+      "type": "boolean",
+      "const": true,
+      "description": "Flag indicating this is an ATM Code Mode manifest"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Unique identifier for this manifest",
+      "examples": ["my-api-collection", "enterprise-tools"]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Human and agent readable description of this API collection"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9.]+)?$",
+      "description": "Version of the generator that created this manifest",
+      "examples": ["1.1.0", "2.0.0-beta.1"]
+    },
+    "generated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the manifest was generated"
+    },
+    "language": {
+      "type": "string",
+      "default": "typescript",
+      "description": "Target language for generated wrappers",
+      "examples": ["typescript", "python", "go"]
+    },
+    "sources": {
+      "$ref": "#/definitions/sources"
+    },
+    "tools": {
+      "$ref": "#/definitions/tools"
+    },
+    "paths": {
+      "$ref": "#/definitions/paths"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Feature flags indicating what this manifest supports"
+    },
+    "auth": {
+      "$ref": "#/definitions/auth"
+    },
+    "tokenReduction": {
+      "$ref": "#/definitions/tokenReduction"
+    },
+    "toolDefinitions": {
+      "$ref": "#/definitions/toolDefinitions"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    }
+  },
+  "additionalProperties": {
+    "description": "Extension fields must be prefixed with x-",
+    "if": {
+      "propertyNames": {
+        "pattern": "^x-"
+      }
+    }
+  },
+  "definitions": {
+    "sources": {
+      "type": "object",
+      "required": ["total"],
+      "properties": {
+        "mcp": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "MCP server source names"
+        },
+        "openapi": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "OpenAPI/REST API source names"
+        },
+        "graphql": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "GraphQL API source names"
+        },
+        "database": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Database source names"
+        },
+        "custom": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Custom source names"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total count of sources"
+        }
+      },
+      "additionalProperties": false,
+      "description": "API sources included in this manifest"
+    },
+    "tools": {
+      "type": "object",
+      "required": ["total", "bySource"],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total tool count across all sources"
+        },
+        "bySource": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Map of source name to tool count"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Tool count information"
+    },
+    "paths": {
+      "type": "object",
+      "required": ["runtime", "wrappers", "config"],
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "description": "Path to runtime module"
+        },
+        "wrappers": {
+          "type": "string",
+          "description": "Root path for generated wrappers"
+        },
+        "config": {
+          "type": "string",
+          "description": "Path to configuration file"
+        }
+      },
+      "additionalProperties": false,
+      "description": "File paths for generated code"
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "description": "Whether ANY source requires authentication"
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/sourceAuth"
+          },
+          "description": "Per-source authentication requirements"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Authentication requirements"
+    },
+    "sourceAuth": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["none", "bearer", "apiKey", "basic", "oauth2", "custom"]
+          },
+          "description": "Supported authentication types"
+        },
+        "default": {
+          "type": "string",
+          "enum": ["none", "bearer", "apiKey", "basic", "oauth2", "custom"],
+          "description": "Recommended authentication type"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether authentication is required for this source"
+        },
+        "instructions": {
+          "type": "string",
+          "description": "Human-readable instructions for obtaining credentials"
+        }
+      },
+      "additionalProperties": true
+    },
+    "tokenReduction": {
+      "type": "object",
+      "properties": {
+        "traditional": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Token count using raw API specifications"
+        },
+        "codeMode": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Token count using generated Code Mode wrappers"
+        },
+        "reduction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Reduction ratio (0-1)"
+        },
+        "savings": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.?[0-9]*%$",
+          "description": "Human-readable percentage savings"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Token reduction statistics"
+    },
+    "toolDefinitions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/toolDefinition"
+        }
+      },
+      "description": "Optional detailed tool definitions by source"
+    },
+    "toolDefinition": {
+      "type": "object",
+      "required": ["name", "description", "inputSchema"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z_][a-z0-9_]*$",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Tool identifier in snake_case format"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "What this tool does"
+        },
+        "inputSchema": {
+          "type": "object",
+          "description": "JSON Schema for tool input parameters"
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "JSON Schema for tool return value"
+        },
+        "metadata": {
+          "$ref": "#/definitions/toolMetadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "toolMetadata": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Logical grouping for this tool"
+        },
+        "requiresAuth": {
+          "type": "boolean",
+          "description": "Whether authentication is required"
+        },
+        "rateLimit": {
+          "type": "string",
+          "description": "Rate limit description"
+        },
+        "deprecated": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this tool is deprecated"
+        },
+        "deprecatedMessage": {
+          "type": "string",
+          "description": "Migration guidance if deprecated"
+        },
+        "httpMethod": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+          "description": "HTTP method (for REST sources)"
+        },
+        "httpPath": {
+          "type": "string",
+          "description": "HTTP path template (for REST sources)"
+        },
+        "operationType": {
+          "type": "string",
+          "enum": ["query", "mutation", "subscription"],
+          "description": "GraphQL operation type"
+        },
+        "table": {
+          "type": "string",
+          "description": "Database table name"
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["select", "insert", "update", "delete", "raw"],
+          "description": "Database operation type"
+        },
+        "dangerous": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this tool performs destructive operations"
+        },
+        "idempotent": {
+          "type": "boolean",
+          "description": "Whether calling multiple times has same effect"
+        },
+        "cacheable": {
+          "type": "boolean",
+          "description": "Whether results can be cached"
+        },
+        "cacheTTL": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cache time-to-live in seconds"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/toolExample"
+          },
+          "description": "Usage examples"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Searchable tags"
+        }
+      },
+      "additionalProperties": true
+    },
+    "toolExample": {
+      "type": "object",
+      "required": ["description", "input"],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "What this example demonstrates"
+        },
+        "input": {
+          "type": "object",
+          "description": "Example input parameters"
+        },
+        "output": {
+          "description": "Example output (optional)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "generatedBy": {
+          "type": "string",
+          "description": "Generator tool name and version"
+        },
+        "checksum": {
+          "type": "string",
+          "pattern": "^(sha256|sha1|md5):[a-fA-F0-9]+$",
+          "description": "Content hash for change detection"
+        },
+        "homepage": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to project homepage"
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to source repository"
+        },
+        "license": {
+          "type": "string",
+          "description": "License identifier"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "url": { "type": "string", "format": "uri" }
+          },
+          "description": "Contact information"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
